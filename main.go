@@ -19,9 +19,20 @@ func configure() error {
 	cwd, _ := os.Getwd()
 	viper.SetDefault("VAR", path.Join(cwd, "var"))
 	viper.SetDefault("JWT_KEY", "test")
+	viper.SetDefault("S3_REGION", "us-east-1")
 	viper.SetDefault("LISTEN_ADDR", "0.0.0.0:8000")
 
 	viper.AutomaticEnv()
+
+	viper.SetConfigName(".env")
+	viper.SetConfigType("env")
+	viper.AddConfigPath(".")
+	err := viper.ReadInConfig()
+	if err != nil {
+		if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
+			panic(err)
+		}
+	}
 
 	return nil
 }

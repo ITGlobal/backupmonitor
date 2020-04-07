@@ -5,7 +5,6 @@ import (
 	"log"
 
 	"github.com/itglobal/backupmonitor/pkg/component"
-	"github.com/itglobal/backupmonitor/pkg/model"
 	"github.com/sarulabs/di"
 )
 
@@ -17,7 +16,7 @@ const emptyFileRef = FileRef("")
 // Service defines methods to read, write and manage storage files
 type Service interface {
 	// Upload new file
-	Upload(project *model.Project, filename string, source io.Reader) (FileRef, error)
+	Upload(filename FileRef, source io.Reader) (FileRef, error)
 
 	// Download existing file
 	Download(file FileRef) (io.ReadCloser, error)
@@ -45,15 +44,16 @@ func GetService(c di.Container) Service {
 
 // Setup configures package services
 func Setup(builder component.Builder) {
-	var factory func(c di.Container, logger *log.Logger) serviceInternal
-	factory = createFileSystemService
-
 	builder.AddService(di.Def{
 		Name: serviceKey,
 		Build: func(c di.Container) (interface{}, error) {
 			logger := log.New(log.Writer(), "[storage] ", log.Flags())
 
-			s := factory(c, logger)
+			s := createS3Service(c, logger)
+
+			if s == nil {
+				s = createFileSystemService(c, logger)
+			}
 
 			err := s.Initialize()
 			if err != nil {

@@ -20,9 +20,11 @@ replace github.com/itglobal/backupmonitor/pkg/util => ./pkg/util
 
 require (
 	github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751
+	github.com/aws/aws-sdk-go v1.30.6 // indirect
 	github.com/cpuguy83/go-md2man/v2 v2.0.0 // indirect
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible // indirect
 	github.com/gin-gonic/gin v1.6.2 // indirect
+	github.com/go-ini/ini v1.55.0 // indirect
 	github.com/go-openapi/spec v0.19.7 // indirect
 	github.com/go-openapi/swag v0.19.8 // indirect
 	github.com/go-swagger/go-swagger v0.23.0 // indirect
@@ -36,7 +38,9 @@ require (
 	github.com/jinzhu/gorm v1.9.12 // indirect
 	github.com/m1/go-generate-password v0.0.0-20191114193340-84682ecbc3fd // indirect
 	github.com/mailru/easyjson v0.7.1 // indirect
+	github.com/minio/minio-go v6.0.14+incompatible // indirect
 	github.com/pkg/errors v0.9.1 // indirect
+	github.com/rlmcpherson/s3gof3r v0.5.0 // indirect
 	github.com/sarulabs/di v2.0.0+incompatible
 	github.com/spf13/viper v1.6.2
 	github.com/swaggo/files v0.0.0-20190704085106-630677cd5c14 // indirect

@@ -1,0 +1,32 @@
+version: "3"
+services:
+  minio:
+    image: minio/minio:edge
+    container_name: bm_minio
+    restart: always
+    ports:
+      - 9000:9000
+    volumes:
+      - bm_minio_data:/root/.minio
+    environment:
+      - MINIO_ACCESS_KEY=developer
+      - MINIO_SECRET_KEY=developer
+    command: server --json /root/.minio/data
+
+  create_buckets:
+    image: minio/mc
+    container_name: bm_minio_init
+    depends_on:
+      - minio
+    entrypoint: sh
+    command: >
+      -c "
+      while ! nc -z minio 9000; do echo 'Wait for minio to startup...' && sleep 1; done;
+      sleep 1;
+      mc config host add local http://minio:9000 developer developer;
+      mc mb local/backupmanager;
+      mc policy set download local/backupmanager
+      "
+
+volumes:
+  bm_minio_data:

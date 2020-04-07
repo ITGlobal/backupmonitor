@@ -1,0 +1,9 @@
+#!/env/bin/env bash
+set -e
+
+DC_YML="./scripts/docker-compose.minio.yml"
+
+docker-compose -f $DC_YML up -d && \
+ID=$(docker-compose -f $DC_YML ps -q create_buckets) && \
+docker wait $ID > /dev/null && \
+docker logs $ID

@@ -1,8 +1,11 @@
 package service
 
 import (
+	"fmt"
 	"io"
 	"log"
+	"path"
+	"regexp"
 	"time"
 
 	"github.com/itglobal/backupmonitor/pkg/database"
@@ -74,7 +77,8 @@ func (s *backupRepository) Upload(projectID, filename string, source io.Reader) 
 	mBackup.Time = time.Now().UTC()
 
 	// Upload backup file
-	fileRef, err := s.store.Upload(project, filename, source)
+	fileRef := s.GenerateBackupFileName(project, filename)
+	fileRef, err = s.store.Upload(fileRef, source)
 	if err != nil {
 		return nil, err
 	}
@@ -103,6 +107,25 @@ func (s *backupRepository) Upload(projectID, filename string, source io.Reader) 
 		eBackup.ProjectID,
 		eBackup.StorageFilePath)
 	return mBackup, nil
+}
+
+// Generate file name for a backup file
+func (s *backupRepository) GenerateBackupFileName(project *model.Project, filename string) storage.FileRef {
+	_, filename = path.Split(filename)
+	ext := path.Ext(filename)
+	name := filename[0 : len(filename)-len(ext)]
+	r := regexp.MustCompile(`[^a-zA-Z0-9_-]`)
+	name = r.ReplaceAllLiteralString(name, "")
+	backupFileName := fmt.Sprintf(
+		"%s.%s.%s%s",
+		name,
+		time.Now().UTC().Format("20060102.150405"),
+		util.GenerateShortToken(),
+		ext)
+
+	backupFileName = path.Join(project.ID, backupFileName)
+
+	return storage.FileRef(backupFileName)
 }
 
 // List project's backups

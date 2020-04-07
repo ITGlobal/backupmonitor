@@ -1,17 +1,12 @@
 package storage
 
 import (
-	"fmt"
 	"io"
 	"io/ioutil"
 	"log"
 	"os"
 	"path"
-	"regexp"
-	"time"
 
-	"github.com/itglobal/backupmonitor/pkg/model"
-	"github.com/itglobal/backupmonitor/pkg/util"
 	"github.com/sarulabs/di"
 	"github.com/spf13/viper"
 )
@@ -42,28 +37,16 @@ func (s *filesystemServiceImpl) Initialize() error {
 }
 
 // Upload new file
-func (s *filesystemServiceImpl) Upload(project *model.Project, filename string, source io.Reader) (FileRef, error) {
-	// Create directory for project
-	directory := path.Join(s.directory, project.ID)
+func (s *filesystemServiceImpl) Upload(filename FileRef, source io.Reader) (FileRef, error) {
+	// Generate file name
+	fullFileName := path.Join(s.directory, string(filename))
+	directory, _ := path.Split(fullFileName)
+
 	err := os.MkdirAll(directory, 0)
 	if err != nil {
 		s.logger.Printf("unable to create directory \"%s\": %v", directory, err)
 		return emptyFileRef, err
 	}
-
-	// Generate file name
-	_, filename = path.Split(filename)
-	ext := path.Ext(filename)
-	name := filename[0 : len(filename)-len(ext)]
-	r := regexp.MustCompile(`[^a-zA-Z0-9_-]`)
-	name = r.ReplaceAllLiteralString(name, "")
-	filename = fmt.Sprintf(
-		"%s.%s.%s%s",
-		name,
-		time.Now().UTC().Format("20060102.150405"),
-		util.GenerateShortToken(),
-		ext)
-	fullFileName := path.Join(directory, filename)
 
 	var n int64
 	{
@@ -83,10 +66,8 @@ func (s *filesystemServiceImpl) Upload(project *model.Project, filename string, 
 	}
 
 	// Return result
-	relativeFileName := path.Join(project.ID, filename)
 	s.logger.Printf("new file has been written: \"%s\" (%d bytes)", fullFileName, n)
-
-	return FileRef(relativeFileName), nil
+	return FileRef(filename), nil
 }
 
 // Download existing file
