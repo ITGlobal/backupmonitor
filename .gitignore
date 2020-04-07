@@ -1,0 +1,6 @@
+backupmonitor
+backupmonitor.exe
+wwwroot/**
+var/**
+!**/.gitkeep
+.env

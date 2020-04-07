@@ -1,0 +1,1 @@
+ls -rec -file -filter go.mod | % { echo "[$($_.Directory)]"; pushd $_.Directory; go get; popd }

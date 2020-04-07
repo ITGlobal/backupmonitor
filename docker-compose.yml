@@ -1,0 +1,13 @@
+version: '3'
+services: 
+  backupmanager:
+    image: backupmanager:latest
+    build:
+      context: .
+    env_file: .env
+    ports:
+      - 8000:8000
+    volumes: 
+      - ./data:/var/backupmanager
+    environment: 
+      VAR: '/var/backupmanager'
