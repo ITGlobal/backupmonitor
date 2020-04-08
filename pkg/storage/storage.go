@@ -35,7 +35,7 @@ type serviceInternal interface {
 	Initialize() error
 }
 
-const serviceKey = "Service"
+const serviceKey = "StorageService"
 
 // GetService returns an implementation Service from DI container
 func GetService(c di.Container) Service {

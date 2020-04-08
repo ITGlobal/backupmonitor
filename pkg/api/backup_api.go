@@ -141,7 +141,7 @@ func (controller *backupController) List(c *gin.Context) {
 func (controller *backupController) Delete(c *gin.Context) {
 	id := c.Param("id")
 
-	err := controller.backupRepo.Delete(id)
+	err := controller.backupRepo.Delete(id, "manually")
 	if err != nil {
 		processError(c, err)
 		return

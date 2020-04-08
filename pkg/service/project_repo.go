@@ -107,7 +107,7 @@ func (s *projectRepository) Get(id string) (*model.Project, error) {
 
 	// Fetch last backup
 	eBackup := &database.Backup{}
-	err = db.Where("id = ? and type = ?", mProject.ID, model.BackupTypeLast).First(&eBackup).Error
+	err = db.Where("project_id = ? and type = ?", mProject.ID, model.BackupTypeLast).First(&eBackup).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		return nil, err
 	}
@@ -277,6 +277,7 @@ func (s *projectRepository) UpdateBackupStatus(tx *gorm.DB, projectID string) er
 	}
 
 	mProject.BackupStatus = status
+	mProject.LastNotification = nil
 	eProject.CopyFromModel(mProject)
 
 	// Update project

@@ -39,6 +39,7 @@ type T interface {
 
 // NewBuilder creates a new instance of Builder
 func NewBuilder() Builder {
+
 	services, _ := di.NewBuilder()
 
 	builder := &builderImpl{

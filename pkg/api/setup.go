@@ -85,7 +85,9 @@ func (s *server) Start(group *sync.WaitGroup, stop chan interface{}) {
 	}()
 
 	go func() {
-		<-stop
+		for range stop {
+		}
+
 		ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 		defer cancel()
 
@@ -102,6 +104,9 @@ func processError(c *gin.Context, err error) {
 	if ok {
 		status := 400
 		switch e.Code {
+		case model.EAccessDenied:
+			status = 403
+			break
 		case model.EBadRequest:
 			status = 400
 			break

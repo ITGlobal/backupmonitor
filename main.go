@@ -10,6 +10,8 @@ import (
 	"github.com/itglobal/backupmonitor/pkg/api"
 	"github.com/itglobal/backupmonitor/pkg/component"
 	"github.com/itglobal/backupmonitor/pkg/database"
+	"github.com/itglobal/backupmonitor/pkg/notify"
+	"github.com/itglobal/backupmonitor/pkg/policy"
 	"github.com/itglobal/backupmonitor/pkg/service"
 	"github.com/itglobal/backupmonitor/pkg/storage"
 	"github.com/spf13/viper"
@@ -34,6 +36,12 @@ func configure() error {
 		}
 	}
 
+	log.Printf("config: [")
+	for _, k := range viper.AllKeys() {
+		log.Printf("  %s=\"%s\"", k, viper.Get(k))
+	}
+	log.Printf("]")
+
 	return nil
 }
 
@@ -43,6 +51,8 @@ func setup() (component.Registry, error) {
 	database.Setup(builder)
 	storage.Setup(builder)
 	service.Setup(builder)
+	notify.Setup(builder)
+	policy.Setup(builder)
 	api.Setup(builder)
 
 	registry, err := builder.Build()
@@ -80,7 +90,7 @@ func main() {
 	go func() {
 		<-interrupt
 		log.Printf("SIGINT received, shutting down")
-		stop <- nil
+		close(stop)
 	}()
 
 	group.Wait()

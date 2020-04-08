@@ -1,5 +1,5 @@
 backupmonitor
-backupmonitor.exe
+backupmonitor.exe*
 wwwroot/**
 var/**
 !**/.gitkeep

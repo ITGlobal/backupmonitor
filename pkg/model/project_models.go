@@ -23,14 +23,18 @@ const (
 
 // Project contains information about project
 type Project struct {
-	ID           string       `json:"id"`
-	Name         string       `json:"name"`
-	Retain       int          `json:"retain"`
-	Enable       bool         `json:"enable"`
-	Notify       bool         `json:"notify"`
-	Period       int          `json:"period"`
-	BackupStatus BackupStatus `json:"backup_status"`
-	LastBackup   *Backup      `json:"last_backup"`
+	ID               string       `json:"id"`
+	Name             string       `json:"name"`
+	Retain           int          `json:"retain"`
+	Enable           bool         `json:"enable"`
+	Notify           bool         `json:"notify"`
+	Period           int          `json:"period"`
+	BackupStatus     BackupStatus `json:"backup_status"`
+	LastBackup       *Backup      `json:"last_backup"`
+	SlackUsers       []string     `json:"slack"`
+	TelegramUsers    []string     `json:"telegram"`
+	Webhooks         []string     `json:"webhook"`
+	LastNotification *time.Time   `json:"-"`
 }
 
 const (
@@ -64,12 +68,15 @@ type Projects []*Project
 
 // ProjectCreateParams contains parameters for project creation
 type ProjectCreateParams struct {
-	ID     string `json:"id" binding:"required"`
-	Name   string `json:"name" binding:"required"`
-	Retain *int   `json:"retain"`
-	Period *int   `json:"period"`
-	Enable *bool  `json:"enable"`
-	Notify *bool  `json:"notify"`
+	ID            string    `json:"id" binding:"required"`
+	Name          string    `json:"name" binding:"required"`
+	Retain        *int      `json:"retain"`
+	Period        *int      `json:"period"`
+	Enable        *bool     `json:"enable"`
+	Notify        *bool     `json:"notify"`
+	SlackUsers    *[]string `json:"slack"`
+	TelegramUsers *[]string `json:"telegram"`
+	Webhooks      *[]string `json:"webhook"`
 }
 
 // Normalize normalizes request's fields
@@ -129,6 +136,24 @@ func (p *ProjectCreateParams) ApplyTo(proj *Project) {
 	} else {
 		proj.Notify = false
 	}
+
+	if p.SlackUsers != nil {
+		proj.SlackUsers = *p.SlackUsers
+	} else {
+		proj.SlackUsers = make([]string, 0)
+	}
+
+	if p.TelegramUsers != nil {
+		proj.TelegramUsers = *p.TelegramUsers
+	} else {
+		proj.TelegramUsers = make([]string, 0)
+	}
+
+	if p.Webhooks != nil {
+		proj.Webhooks = *p.Webhooks
+	} else {
+		proj.Webhooks = make([]string, 0)
+	}
 }
 
 // String convers an object to string
@@ -138,11 +163,15 @@ func (p *ProjectCreateParams) String() string {
 
 // ProjectUpdateParams contains parameters for project modification
 type ProjectUpdateParams struct {
-	Name   *string `json:"name"`
-	Retain *int    `json:"retain"`
-	Period *int    `json:"period"`
-	Enable *bool   `json:"enable"`
-	Notify *bool   `json:"notify"`
+	Name             *string    `json:"name"`
+	Retain           *int       `json:"retain"`
+	Period           *int       `json:"period"`
+	Enable           *bool      `json:"enable"`
+	Notify           *bool      `json:"notify"`
+	SlackUsers       *[]string  `json:"slack"`
+	TelegramUsers    *[]string  `json:"telegram"`
+	Webhooks         *[]string  `json:"webhook"`
+	LastNotification *time.Time `json:"-"`
 }
 
 // Normalize normalizes request's fields
@@ -190,5 +219,21 @@ func (p *ProjectUpdateParams) ApplyTo(proj *Project) {
 
 	if p.Notify != nil {
 		proj.Notify = *p.Notify
+	}
+
+	if p.LastNotification != nil {
+		proj.LastNotification = p.LastNotification
+	}
+
+	if p.SlackUsers != nil {
+		proj.SlackUsers = *p.SlackUsers
+	}
+
+	if p.TelegramUsers != nil {
+		proj.TelegramUsers = *p.TelegramUsers
+	}
+
+	if p.Webhooks != nil {
+		proj.Webhooks = *p.Webhooks
 	}
 }

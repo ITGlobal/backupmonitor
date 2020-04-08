@@ -1,4 +1,4 @@
 backupmonitor
-backupmonitor.exe
+backupmonitor.exe*
 var/**
 .env

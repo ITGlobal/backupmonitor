@@ -34,7 +34,7 @@ type BackupRepository interface {
 	Download(id string) (*BackupFile, error)
 
 	// Delete a backup
-	Delete(id string) error
+	Delete(id, reason string) error
 }
 
 const backupRepositoryKey = "BackupRepository"
@@ -66,6 +66,10 @@ func (s *backupRepository) Upload(projectID, filename string, source io.Reader) 
 	project, err := s.projectRepository.Get(projectID)
 	if err != nil {
 		return nil, err
+	}
+
+	if !project.Enable {
+		return nil, model.NewError(model.EAccessDenied, "access denied")
 	}
 
 	// Create backup
@@ -187,7 +191,7 @@ func (s *backupRepository) Download(id string) (*BackupFile, error) {
 }
 
 // Delete a backup
-func (s *backupRepository) Delete(id string) error {
+func (s *backupRepository) Delete(id, reason string) error {
 	db, err := s.provider.Open()
 	if err != nil {
 		return err
@@ -228,7 +232,7 @@ func (s *backupRepository) Delete(id string) error {
 
 	tx.Commit()
 
-	s.logger.Printf("backup \"%s\" (project \"%s\") has been deleted", eBackup.ID, eBackup.ProjectID)
+	s.logger.Printf("backup \"%s\" (project \"%s\") has been deleted %s", eBackup.ID, eBackup.ProjectID, reason)
 	return nil
 }
 

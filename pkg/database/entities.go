@@ -1,6 +1,7 @@
 package database
 
 import (
+	"strings"
 	"time"
 
 	"github.com/itglobal/backupmonitor/pkg/model"
@@ -34,15 +35,19 @@ func (p *User) CopyFromModel(m *model.User) {
 
 // Project contains information about project
 type Project struct {
-	ID           string             `gorm:"column:id;type:varchar(64);primary_key"`
-	Name         string             `gorm:"column:name;type:varchar(256)"`
-	Retain       int                `gorm:"column:retain"`
-	Period       int                `gorm:"column:period"`
-	Enable       bool               `gorm:"column:enable"`
-	Notify       bool               `gorm:"column:notify"`
-	BackupStatus model.BackupStatus `gorm:"column:backup_status"`
-	Backups      []*Backup          `gorm:"foreignkey:project_id"`
-	AccessKeys   []*AccessKey       `gorm:"foreignkey:project_id"`
+	ID               string             `gorm:"column:id;type:varchar(64);primary_key"`
+	Name             string             `gorm:"column:name;type:varchar(256)"`
+	Retain           int                `gorm:"column:retain"`
+	Period           int                `gorm:"column:period"`
+	Enable           bool               `gorm:"column:enable"`
+	Notify           bool               `gorm:"column:notify"`
+	LastNotification *time.Time         `gorm:"column:last_notified"`
+	BackupStatus     model.BackupStatus `gorm:"column:backup_status"`
+	SlackUsers       string             `gorm:"column:slack;type:varchar(256)"`
+	TelegramUsers    string             `gorm:"column:telegram;type:varchar(256)"`
+	Webhooks         string             `gorm:"column:webhook;type:varchar(1024)"`
+	Backups          []*Backup          `gorm:"foreignkey:project_id"`
+	AccessKeys       []*AccessKey       `gorm:"foreignkey:project_id"`
 }
 
 // TableName returns database table name
@@ -66,6 +71,11 @@ func (p *Project) CopyToModel(m *model.Project) {
 	m.Enable = p.Enable
 	m.Notify = p.Notify
 	m.BackupStatus = p.BackupStatus
+	m.LastNotification = p.LastNotification
+
+	m.SlackUsers = p.commaSeparatedToStringArray(p.SlackUsers)
+	m.TelegramUsers = p.commaSeparatedToStringArray(p.TelegramUsers)
+	m.Webhooks = p.commaSeparatedToStringArray(p.Webhooks)
 }
 
 // CopyFromModel copies model data to entity
@@ -77,6 +87,25 @@ func (p *Project) CopyFromModel(m *model.Project) {
 	p.Enable = m.Enable
 	p.Notify = m.Notify
 	p.BackupStatus = m.BackupStatus
+	p.LastNotification = m.LastNotification
+
+	p.SlackUsers = p.stringArrayToCommaSeparated(m.SlackUsers)
+	p.TelegramUsers = p.stringArrayToCommaSeparated(m.TelegramUsers)
+	p.Webhooks = p.stringArrayToCommaSeparated(m.Webhooks)
+}
+
+func (p *Project) stringArrayToCommaSeparated(array []string) string {
+	str := strings.Join(array, ";")
+	return str
+}
+
+func (p *Project) commaSeparatedToStringArray(str string) []string {
+	if str == "" {
+		return make([]string, 0)
+	}
+
+	array := strings.Split(str, ";")
+	return array
 }
 
 // Backup contains information about project's backup
