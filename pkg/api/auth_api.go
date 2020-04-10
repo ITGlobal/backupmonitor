@@ -45,7 +45,9 @@ func (t *authController) Authorize(c *gin.Context) {
 				return
 			}
 
-			c.JSON(200, &model.AuthResponse{token})
+			c.JSON(200, &model.AuthResponse{
+				Token: token, 
+				User: user})
 			return
 		}
 	}

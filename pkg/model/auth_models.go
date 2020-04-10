@@ -14,6 +14,7 @@ func (p AuthRequest) String() string {
 // AuthResponse contains a generated access token
 type AuthResponse struct {
 	Token string `json:"token"`
+	User  *User  `json:"user"`
 }
 
 // String convers an object to string

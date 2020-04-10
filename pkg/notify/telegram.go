@@ -84,7 +84,7 @@ func (s *enabledTelegramNotifyer) Notify(msg *TelegramMessage) error {
 			return err
 		}
 
-		s.logger.Printf("telegram message %d has been sent to \"%s\" %d", r.MessageID, to, r.Chat.ID)
+		s.logger.Printf("telegram message %d has been sent to %d", r.MessageID, r.Chat.ID)
 	}
 
 	return nil

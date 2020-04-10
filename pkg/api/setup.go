@@ -4,7 +4,9 @@ import (
 	"context"
 	"log"
 	"net/http"
-	"sync"
+	"path"
+	"path/filepath"
+	"sync"	
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -60,12 +62,27 @@ func createComponent(c di.Container) (component.T, error) {
 	server.ConfigureProjectsAPI()
 	server.ConfigureBackupAPI()
 	server.ConfigureAccessAPI()
+	server.ConfigureStaticFiles()
 
-	http.Handle("/api/", server.router)
-	http.Handle("/", http.FileServer(http.Dir("./www")))
+	http.Handle("/", server.router)
+	//http.Handle("/", http.FileServer(http.Dir("./www")))
 
 	return server, nil
 }
+
+func (s *server) ConfigureStaticFiles() {
+	
+	s.router.NoRoute(func (c *gin.Context) {
+		dir, file := path.Split(c.Request.RequestURI)
+		ext := filepath.Ext(file)
+		if file == "" || ext == "" {
+			c.File("./www/index.html")
+		} else {
+			c.File("./www" + path.Join(dir, file))
+		}
+	})
+}
+
 
 func (s *server) Start(group *sync.WaitGroup, stop chan interface{}) {
 	group.Add(1)
