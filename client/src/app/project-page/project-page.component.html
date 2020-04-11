@@ -1,0 +1,76 @@
+<app-navbar></app-navbar>
+<main role="main" class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a href="/">Projects</a></li>
+            <li class="breadcrumb-item active" aria-current="page">{{ id }}</li>
+        </ol>
+    </nav>
+
+    <div class="alert alert-info text-center" *ngIf="isBusy">
+        <fa-icon icon="spinner" [spin]="true"></fa-icon> Loading...
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="!!error">
+        <h4>Error!</h4>
+        <p>
+            {{error}}
+        </p>
+        <hr>
+        <p>
+            <button type="button" class="btn btn-danger" (click)="refresh()">
+                Try again
+            </button>
+        </p>
+    </div>
+
+    <div *ngIf="!isBusy && !error">
+
+        <ul class="nav nav-tabs mt-2">
+            <li class="nav-item">
+                <a class="nav-link {{ getTabLinkClass('summary') }}" href="#summary" (click)="selectTab('summary')">
+                    Summary
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ getTabLinkClass('integration') }}" href="#integration"
+                    (click)="selectTab('integration')">
+                    Integration
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ getTabLinkClass('backups') }}" href="#backups" (click)="selectTab('backups')">
+                    Backups <span class="badge badge-pill badge-primary">{{ backups.length }}</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link {{ getTabLinkClass('keys') }}" href="#keys" (click)="selectTab('keys')">
+                    Access keys <span class="badge badge-pill badge-primary">{{ accessKeys.length }}</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="tab-content mt-2">
+            <div class="tab-pane fade {{ getTabPaneClass('summary') }}" role="tabpanel">
+                <app-project-summary [project]="project"></app-project-summary>
+            </div>
+
+            <div class="tab-pane fade {{ getTabPaneClass('integration') }}" role="tabpanel">
+                <app-project-integration-guide [project]="project"></app-project-integration-guide>
+            </div>
+
+            <div class="tab-pane fade {{ getTabPaneClass('backups') }}" role="tabpanel">
+                <app-project-backups [project]="project" [backups]="backups" (refreshRequested)="refreshBackups()">
+                </app-project-backups>
+            </div>
+
+            <div class="tab-pane fade {{ getTabPaneClass('keys') }}" role="tabpanel">
+                <app-project-access-keys [project]="project" [accessKeys]="accessKeys"
+                    (refreshRequested)="refreshAccessKeys()">
+                </app-project-access-keys>
+            </div>
+        </div>
+    </div>
+
+
+</main>

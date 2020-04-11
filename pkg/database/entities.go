@@ -35,19 +35,19 @@ func (p *User) CopyFromModel(m *model.User) {
 
 // Project contains information about project
 type Project struct {
-	ID               string             `gorm:"column:id;type:varchar(64);primary_key"`
-	Name             string             `gorm:"column:name;type:varchar(256)"`
-	Retain           int                `gorm:"column:retain"`
-	Period           int                `gorm:"column:period"`
-	Enable           bool               `gorm:"column:enable"`
-	Notify           bool               `gorm:"column:notify"`
-	LastNotification *time.Time         `gorm:"column:last_notified"`
-	BackupStatus     model.BackupStatus `gorm:"column:backup_status"`
-	SlackUsers       string             `gorm:"column:slack;type:varchar(256)"`
-	TelegramUsers    string             `gorm:"column:telegram;type:varchar(256)"`
-	Webhooks         string             `gorm:"column:webhook;type:varchar(1024)"`
-	Backups          []*Backup          `gorm:"foreignkey:project_id"`
-	AccessKeys       []*AccessKey       `gorm:"foreignkey:project_id"`
+	ID                  string             `gorm:"column:id;type:varchar(64);primary_key"`
+	Name                string             `gorm:"column:name;type:varchar(256)"`
+	BackupRetention     int                `gorm:"column:backup_retention"`
+	BackupFrequency     int                `gorm:"column:backup_frequency"`
+	IsActive            bool               `gorm:"column:is_active"`
+	EnableNotifications bool               `gorm:"column:enable_notifications"`
+	LastNotification    *time.Time         `gorm:"column:last_notified"`
+	SlackUsers          string             `gorm:"column:notify_slack;type:varchar(256)"`
+	TelegramUsers       string             `gorm:"column:notify_telegram;type:varchar(256)"`
+	Webhooks            string             `gorm:"column:notify_webhook;type:varchar(1024)"`
+	BackupStatus        model.BackupStatus `gorm:"column:backup_status"`
+	Backups             []*Backup          `gorm:"foreignkey:project_id"`
+	AccessKeys          []*AccessKey       `gorm:"foreignkey:project_id"`
 }
 
 // TableName returns database table name
@@ -66,32 +66,44 @@ func (p *Project) ToModel() *model.Project {
 func (p *Project) CopyToModel(m *model.Project) {
 	m.ID = p.ID
 	m.Name = p.Name
-	m.Retain = p.Retain
-	m.Period = p.Period
-	m.Enable = p.Enable
-	m.Notify = p.Notify
+	m.BackupRetention = p.BackupRetention
+	m.BackupFrequency = p.BackupFrequency
+	m.IsActive = p.IsActive
 	m.BackupStatus = p.BackupStatus
 	m.LastNotification = p.LastNotification
 
-	m.SlackUsers = p.commaSeparatedToStringArray(p.SlackUsers)
-	m.TelegramUsers = p.commaSeparatedToStringArray(p.TelegramUsers)
-	m.Webhooks = p.commaSeparatedToStringArray(p.Webhooks)
+	if m.Notifications == nil {
+		m.Notifications = &model.NotificationParams{}
+	}
+
+	m.Notifications.Enabled = p.EnableNotifications
+	m.Notifications.SlackUsers = p.commaSeparatedToStringArray(p.SlackUsers)
+	m.Notifications.TelegramUsers = p.commaSeparatedToStringArray(p.TelegramUsers)
+	m.Notifications.Webhooks = p.commaSeparatedToStringArray(p.Webhooks)
 }
 
 // CopyFromModel copies model data to entity
 func (p *Project) CopyFromModel(m *model.Project) {
 	p.ID = m.ID
 	p.Name = m.Name
-	p.Retain = m.Retain
-	p.Period = m.Period
-	p.Enable = m.Enable
-	p.Notify = m.Notify
+	p.BackupRetention = m.BackupRetention
+	p.BackupFrequency = m.BackupFrequency
+	p.IsActive = m.IsActive
 	p.BackupStatus = m.BackupStatus
 	p.LastNotification = m.LastNotification
 
-	p.SlackUsers = p.stringArrayToCommaSeparated(m.SlackUsers)
-	p.TelegramUsers = p.stringArrayToCommaSeparated(m.TelegramUsers)
-	p.Webhooks = p.stringArrayToCommaSeparated(m.Webhooks)
+	if m.Notifications != nil {
+		p.EnableNotifications = m.Notifications.Enabled
+		p.SlackUsers = p.stringArrayToCommaSeparated(m.Notifications.SlackUsers)
+		p.TelegramUsers = p.stringArrayToCommaSeparated(m.Notifications.TelegramUsers)
+		p.Webhooks = p.stringArrayToCommaSeparated(m.Notifications.Webhooks)
+	} else {
+		p.EnableNotifications = false
+		p.SlackUsers = ""
+		p.TelegramUsers = ""
+		p.Webhooks = ""
+	}
+
 }
 
 func (p *Project) stringArrayToCommaSeparated(array []string) string {

@@ -1,0 +1,84 @@
+<form onsubmit="return false;">
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">ID</label>
+        <div class="col-sm-8">
+            <p class="form-control">{{ project?.id }}</p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Name and description</label>
+        <div class="col-sm-8">
+            <p class="form-control">{{ project?.name }}</p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Backup status</label>
+        <div class="col-sm-8">
+            <p class="form-control {{ getBackupStatusClass() }}">
+                <fa-icon [icon]="getBackupStatusIcon()"></fa-icon>
+                {{ getBackupStatusText() }}
+            </p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Last backup</label>
+        <div class="col-sm-8">
+            <p class="form-control">
+                {{ getLastBackupStatusText() }}
+            </p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Backup frequency</label>
+        <div class="col-sm-8">
+            <p class="form-control">
+                {{ getBackupPeriodText() }}
+            </p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Backup retention</label>
+        <div class="col-sm-8">
+            <p class="form-control">
+                {{ getBackupRetentionText() }}
+            </p>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label"></label>
+        <div class="col-sm-8">
+            <div class="custom-control custom-switch">
+                <input type="checkbox" class="custom-control-input" disabled [checked]="project?.isActive">
+                <label class="custom-control-label">Project is active </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label">Notifications</label>
+        <div class="col-sm-8">
+            <app-notification-targets-editor [value]="project?.notifications" [readonly]="true">
+            </app-notification-targets-editor>
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-sm-4 col-form-label"></label>
+        <div class="col-sm-8">
+            <div class="btn-toolbar" role="toolbar">
+                <div class="btn-group mr-2" role="group">
+                    <a [routerLink]="['/projects', project?.id, 'edit' ]" class="btn btn-primary">
+                        <fa-icon icon="edit"></fa-icon>
+                        Edit
+                    </a>
+                </div>
+                <div class="btn-group mr-2" role="group">
+                    <button type="button" class="btn btn-danger" (click)="deleteProject()">
+                        <fa-icon icon="trash"></fa-icon>
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</form>

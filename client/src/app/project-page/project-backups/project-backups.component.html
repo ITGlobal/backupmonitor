@@ -1,0 +1,49 @@
+<div class="btn-toolbar mb-2" role="toolbar">
+    <div class="btn-group mr-2" role="group">
+        <button type="button" class="btn btn-secondary" (click)="refresh()">
+            <fa-icon icon="sync-alt"></fa-icon>
+            Refresh
+        </button>
+    </div>
+</div>
+
+<div class="alert alert-warning mt-2" *ngIf="backups.length === 0">
+    No backups are available.
+</div>
+
+<table class="table" *ngIf="backups.length > 0">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">ID</th>
+            <th scope="col">Taken</th>
+            <th scope="col">File name</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody *ngFor="let backup of backups">
+        <tr>
+            <th scope="row">
+                <fa-icon [icon]="getBackupIcon(backup)"></fa-icon>
+            </th>
+            <th scope="row">
+                <samp>{{ backup.id }}</samp>
+            </th>
+            <td title="{{ backup.time }}">
+                {{ getBackupAge(backup) }}
+            </td>
+            <td>
+                {{ backup.filename }}
+            </td>
+            <td>
+                <a href="{{ getBackupDownloadUrl(backup) }}" class="btn btn-outline-primary" target="_blank">
+                    <fa-icon icon="file-download"></fa-icon> Download
+                </a>
+
+                <button type="button" class="btn btn-outline-danger" (click)="deleteBackup(backup)">
+                    <fa-icon icon="trash"></fa-icon> Delete
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>

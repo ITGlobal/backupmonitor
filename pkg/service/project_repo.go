@@ -268,9 +268,15 @@ func (s *projectRepository) UpdateBackupStatus(tx *gorm.DB, projectID string) er
 		return err
 	}
 
+	var mLastBackup *model.Backup
+	if err == gorm.ErrRecordNotFound {
+		mLastBackup = nil
+	} else {
+		mLastBackup = eLastBackup.ToModel()
+	}
+
 	// Evaluate project backup status
 	mProject := eProject.ToModel()
-	mLastBackup := eLastBackup.ToModel()
 	status := mProject.CalcBackupStatus(mLastBackup)
 	if status == mProject.BackupStatus {
 		return nil

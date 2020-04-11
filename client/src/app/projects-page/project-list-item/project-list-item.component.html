@@ -1,0 +1,11 @@
+<a [routerLink]="[ '/projects', project.id ]" class="list-group-item list-group-item-action {{ className }}">
+    <div class="d-flex w-100 justify-content-between">
+        <h5 class="mb-1">{{ project.id }}</h5>
+        <small>
+            {{ backupStatusText }}
+            <fa-icon [icon]="backupStatusIcon"></fa-icon>
+             </small>
+    </div>
+    <p class="mb-1">{{ project.name }}</p>
+    <small>{{ description }}</small>
+</a>

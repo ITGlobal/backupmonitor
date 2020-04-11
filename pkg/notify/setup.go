@@ -2,6 +2,7 @@ package notify
 
 import (
 	"log"
+	"sync"
 
 	"github.com/itglobal/backupmonitor/pkg/component"
 	"github.com/sarulabs/di"
@@ -17,9 +18,17 @@ func Setup(builder component.Builder) {
 			logger := log.New(log.Writer(), "[notify] ", log.Flags())
 
 			s := &serviceImpl{
-				slack:    createSlackNotifyer(logger),
-				telegram: createTelegramNotifyer(logger),
-				webhook:  createWebhookNotifyer(logger),
+				slack: newAsyncInit(func() interface{} {
+					return createSlackNotifyer(logger)
+				}),
+
+				telegram: newAsyncInit(func() interface{} {
+					return createTelegramNotifyer(logger)
+				}),
+
+				webhook: newAsyncInit(func() interface{} {
+					return createWebhookNotifyer(logger)
+				}),
 			}
 			return s, nil
 		},
@@ -66,25 +75,55 @@ func GetService(c di.Container) Service {
 }
 
 type serviceImpl struct {
-	slack    slackNotifyer
-	telegram telegramNotifyer
-	webhook  webhookNotifyer
+	slack    *asyncInit
+	telegram *asyncInit
+	webhook  *asyncInit
 }
 
 // Send a notification via Slack
 func (s *serviceImpl) NotifySlack(msg *SlackMessage) error {
-	err := s.slack.Notify(msg)
+	notifyer := s.slack.GetValue().(slackNotifyer)
+	err := notifyer.Notify(msg)
 	return err
 }
 
 // Send a notification via Telegram
 func (s *serviceImpl) NotifyTelegram(msg *TelegramMessage) error {
-	err := s.telegram.Notify(msg)
+	notifyer := s.telegram.GetValue().(telegramNotifyer)
+	err := notifyer.Notify(msg)
 	return err
 }
 
 // Send a notification via webhook
 func (s *serviceImpl) NotifyWebhook(msg *WebhookMessage) error {
-	err := s.webhook.Notify(msg)
+	notifyer := s.webhook.GetValue().(webhookNotifyer)
+	err := notifyer.Notify(msg)
 	return err
+}
+
+type asyncInit struct {
+	wait  *sync.WaitGroup
+	value interface{}
+}
+
+func newAsyncInit(factory func() interface{}) *asyncInit {
+	s := &asyncInit{
+		wait:  &sync.WaitGroup{},
+		value: nil,
+	}
+	s.wait.Add(1)
+
+	go func() {
+		value := factory()
+
+		s.value = value
+		s.wait.Done()
+	}()
+
+	return s
+}
+
+func (s *asyncInit) GetValue() interface{} {
+	s.wait.Wait()
+	return s.value
 }

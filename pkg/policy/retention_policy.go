@@ -93,7 +93,11 @@ func (s *retentionPolicy) DropOldBackups(project *model.Project) error {
 	// backups are ordered by time desc
 	// remove all but first N backups
 
-	backups = backups[project.Retain:]
+	if len(backups) <=project.BackupRetention {
+		return nil
+	}
+
+	backups = backups[project.BackupRetention:]
 	for _, backup := range backups {
 		err = s.backupRepository.Delete(backup.ID, "by retention policy")
 		if err != nil {

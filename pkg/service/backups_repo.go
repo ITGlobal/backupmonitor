@@ -68,7 +68,7 @@ func (s *backupRepository) Upload(projectID, filename string, source io.Reader) 
 		return nil, err
 	}
 
-	if !project.Enable {
+	if !project.IsActive {
 		return nil, model.NewError(model.EAccessDenied, "access denied")
 	}
 

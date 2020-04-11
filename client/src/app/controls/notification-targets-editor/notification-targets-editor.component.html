@@ -1,0 +1,60 @@
+<div class="custom-control custom-switch">
+    <input type="checkbox" class="custom-control-input" id="checkbox_notify" [(ngModel)]="enabled"
+        [disabled]="readonly || disabled">
+    <label class="custom-control-label" for="checkbox_notify">
+        Send notifications if backup is out of date
+    </label>
+</div>
+<div *ngIf="enabled">
+    <div *ngIf="!hasAnyTargets() && readonly" class="mt-2">
+        No notification targets are configured
+    </div>
+
+    <div *ngIf="!hasAnyTargets() && !readonly" class="alert alert-warning mt-2">
+        No notification targets are configured
+        <hr />
+        <button type="button" class="btn btn-secondary" (click)="addTarget()" [disabled]="readonly || disabled">
+            <fa-icon icon="plus"></fa-icon>
+            Add notification target
+        </button>
+    </div>
+
+    <div *ngIf="hasAnyTargets()">
+        <div class="btn-toolbar mt-2 mb-2" role="toolbar" *ngIf="!readonly">
+            <div class="btn-group mr-2" role="group">
+                <button type="button" class="btn btn-primary" (click)="addTarget()" [disabled]="readonly || disabled">
+                    <fa-icon icon="plus"></fa-icon>
+                    Add notification target
+                </button>
+            </div>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Type</th>
+                    <th scope="col">Value</th>
+                    <th scope="col" *ngIf="!readonly"></th>
+                </tr>
+            </thead>
+            <tbody *ngFor="let target of listTargets()">
+                <tr>
+                    <th scope="row">
+                        {{ target.type }}
+                    </th>
+                    <td>
+                        <samp>
+                            {{ target.value }}
+                        </samp>
+                    </td>
+                    <td *ngIf="!readonly">
+                        <button type="button" class="btn btn-outline-danger"
+                            (click)="removeTarget(target.type, target.value)" [disabled]="readonly || disabled">
+                            <fa-icon icon="trash"></fa-icon> Delete
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

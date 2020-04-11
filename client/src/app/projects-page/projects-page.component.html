@@ -1,0 +1,53 @@
+<app-navbar></app-navbar>
+<main role="main" class="container">
+    <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active">Projects</li>
+        </ol>
+    </nav>
+
+    <div class="alert alert-info text-center" *ngIf="isBusy">
+        <fa-icon icon="spinner" [spin]="true"></fa-icon> Loading...
+    </div>
+
+    <div class="alert alert-danger" role="alert" *ngIf="!!error">
+        <h4>Error!</h4>
+        <p>
+            {{error}}
+        </p>
+        <hr>
+        <p>
+            <button type="button" class="btn btn-danger" (click)="refresh()">
+                Try again
+            </button>
+        </p>
+    </div>
+
+    <div *ngIf="!isBusy && !error">
+        <div class="btn-toolbar" role="toolbar">
+            <div class="btn-group mr-2" role="group">
+                <a href="/new-project" class="btn btn-primary">
+                    <fa-icon icon="plus"></fa-icon>
+                    Create new project
+                </a>
+            </div>
+            <div class="btn-group mr-2" role="group">
+                <button type="button" class="btn btn-secondary" (click)="refresh()">
+                    <fa-icon icon="sync-alt"></fa-icon>
+                    Refresh
+                </button>
+            </div>
+        </div>
+
+        <div class="alert alert-warning mt-2" *ngIf="projects.length === 0">
+            No projects are available. Click <a href="/new-project">here</a> to create one.
+        </div>
+
+        <div *ngIf="projects.length > 0">
+            <div class="list-group mt-2" *ngFor="let project of projects">
+                <app-project-list-item [project]="project"></app-project-list-item>
+            </div>
+        </div>
+    </div>
+
+</main>

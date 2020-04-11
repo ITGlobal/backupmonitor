@@ -1,0 +1,113 @@
+<h4>Uploading backups</h4>
+<p>
+    In order to upload a backup you will need to:
+</p>
+
+<div class="card-deck mt-2 mb-2">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">1. Take a backup</h5>
+            <p class="card-text">
+                Use application-specific tools to take a backup of your application
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">2. Package a backup</h5>
+            <p class="card-text">
+                <strong>BackupManager</strong> supports only single-file backups.
+                If your application generates a multi-file backup
+                then you will need to package it into a single file,
+                e.g. <samp>my-awesome-backup.zip</samp>
+            </p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">3. Upload a backup</h5>
+            <p class="card-text">
+                Upload resulting backup file to <strong>BackupManager</strong>.
+                It will be available immediatelly.
+            </p>
+            <pre><code [highlight]="getShortCodeSample()" [languages]="['bash']"></code></pre>
+        </div>
+    </div>
+</div>
+
+<p>
+    Backup upload is performed via multipart POST HTTP request to <samp>{{getBackupEndpoint()}}</samp> endpoint:
+</p>
+<pre><code [highlight]="getGenericCodeSample()" [languages]="['bash']"></code></pre>
+<p class="alert alert-info">
+    Please note that only one backup file is allowed.
+    If you need to create separate backup files please create separate projects for them.
+</p>
+<h4>Authentication</h4>
+<p>
+    You will need an access key to upload backup files.
+    Refer to <a href="{{getAccessKeysPageUrl()}}" (click)="openAccessKeysPage()">access keys section</a> to get or
+    create one.
+</p>
+<p>
+    There are two ways to supply an access key when uploading a backup:
+</p>
+<div class="card-deck mb-4">
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Using HTTP request headers</h5>
+            <p class="card-text">
+                Add an <samp>Authorization</samp> header to your request:
+            </p>
+            <pre class="card-text"><code [highlight]="getCodeSampleWithHeaderAuth()" [languages]="['bash']"></code></pre>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title">Using query string parameters</h5>
+            <p class="card-text">
+                Add a <samp>key</samp> parameter to your request's query string:
+            </p>
+            <pre class="card-text"><code [highlight]="getCodeSampleWithQueryAuth()" [languages]="['bash']"></code></pre>
+        </div>
+    </div>
+</div>
+<h4>Service response</h4>
+<p>
+    <strong>BackupManager</strong> will return one on the following responses:
+</p>
+<div class="card-deck mb-4">
+    <div class="card border-success">
+        <div class="card-body">
+            <h5 class="card-title">201 Created</h5>
+            <p class="card-text">
+                If backup has been accepted and stored, service will return the following response:
+            </p>
+            <pre class="card-text"><code [highlight]="get201HttpResponse()" [languages]="['bash']"></code></pre>
+        </div>
+    </div>
+    <div class="card border-danger">
+        <div class="card-body">
+            <h5 class="card-title">400 Bad Request</h5>
+            <p class="card-text">
+                If your request contained an incorrect data, service will return the following response:
+            </p>
+            <pre class="card-text"><code [highlight]="get400HttpResponse()" [languages]="['bash']"></code></pre>
+        </div>
+    </div>
+    <div class="card border-danger">
+        <div class="card-body">
+            <h5 class="card-title">403 Forbidden</h5>
+            <p class="card-text">
+                If your access key is not valid, revoked, not supplied at all or a corresponding project is disabled,
+                service will return the following response:
+            </p>
+            <pre class="card-text"><code [highlight]="get403HttpResponse()" [languages]="['bash']"></code></pre>
+        </div>
+    </div>    
+</div>
+<p>
+    Generally speaking, any non-2xx status means an error and any 2xx status means a success.
+</p>

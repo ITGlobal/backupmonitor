@@ -3,6 +3,8 @@
 Small server-side app that serves a simple purpose:
 to receive, manage and monitor various backups.
 
+![screenshot](screenshot.png)
+
 ## Features
 
 * Receives a generic backup files via HTTP(S)

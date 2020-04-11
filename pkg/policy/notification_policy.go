@@ -15,6 +15,7 @@ import (
 
 const (
 	notificationFrequency = 8 * time.Hour
+	notificationQuietPeriod = 8 * time.Hour
 )
 
 type notificationPolicy struct {
@@ -82,7 +83,7 @@ func (s *notificationPolicy) Execute() error {
 }
 
 func (s *notificationPolicy) ShouldSendNotification(project *model.Project, now time.Time) bool {
-	if !project.Enable || !project.Notify {
+	if !project.IsActive || !project.Notifications.Enabled {
 		return false
 	}
 
@@ -95,7 +96,8 @@ func (s *notificationPolicy) ShouldSendNotification(project *model.Project, now 
 	}
 
 	t := now.Sub(*project.LastNotification)
-	if t.Seconds() < notificationFrequency.Seconds() {
+
+	if t.Seconds() < notificationFrequency.Seconds() + notificationQuietPeriod.Seconds() {
 		return false
 	}
 
@@ -113,7 +115,7 @@ func (s *notificationPolicy) SendNotification(project *model.Project) error {
 
 	// Send to slack
 	err := s.notificationService.NotifySlack(&notify.SlackMessage{
-		To:    project.SlackUsers,
+		To:    project.Notifications.SlackUsers,
 		Title: title,
 		Text:  text,
 		Emoji: emoji,
@@ -124,7 +126,7 @@ func (s *notificationPolicy) SendNotification(project *model.Project) error {
 
 	// Send to telegram
 	err = s.notificationService.NotifyTelegram(&notify.TelegramMessage{
-		To:    project.TelegramUsers,
+		To:    project.Notifications.TelegramUsers,
 		Title: title,
 		Text:  text,
 		Emoji: emoji,
@@ -143,7 +145,7 @@ func (s *notificationPolicy) SendNotification(project *model.Project) error {
 	}
 
 	err = s.notificationService.NotifyWebhook(&notify.WebhookMessage{
-		To:          project.Webhooks,
+		To:          project.Notifications.Webhooks,
 		PayloadJSON: payloadJSON,
 	})
 	if err != nil {

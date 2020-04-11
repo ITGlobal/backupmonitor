@@ -1,6 +1,6 @@
 backupmonitor
 backupmonitor.exe*
-wwwroot/**
+www/**
 var/**
 !**/.gitkeep
 .env

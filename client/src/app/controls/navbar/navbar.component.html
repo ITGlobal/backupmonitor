@@ -1,0 +1,47 @@
+<nav class="navbar navbar-expand-sm navbar-dark bg-dark fixed-top">
+    <a class="navbar-brand" href="/" (click)="onItemClicked()">
+        <fa-icon icon="archive"></fa-icon>
+        BackupMonitor
+    </a>
+    <button class="navbar-toggler" type="button" (click)="toggleNavBar()">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div [ngbCollapse]="isMenuCollapsed" class="collapse navbar-collapse">
+        <ul class="navbar-nav ml-auto">
+            <li class="nav-item">
+                <a class="nav-link" href="/api/swagger/index.html">
+                    <fa-icon icon="cog"></fa-icon> API
+                </a>
+            </li>
+            <li class="nav-item d-block d-sm-none d-xs-none">
+                <a class="nav-link" href="#" (click)="onItemClicked(); $event.preventDefault();">
+                    <fa-icon icon="user"></fa-icon> {{ username }}
+                </a>
+            </li>
+            <li class="nav-item d-block d-sm-none d-xs-none">
+                <a class="nav-link" [routerLink]="['/change-password']">
+                    <fa-icon icon="unlock-alt"></fa-icon> Change password
+                </a>
+            </li>
+            <li class="nav-item d-block d-sm-none d-xs-none">
+                <a class="nav-link" [routerLink]="['/logout']">
+                    <fa-icon icon="sign-out-alt"></fa-icon> Sign out
+                </a>
+            </li>
+            <li class="nav-item d-none d-sm-block d-xs-block" ngbDropdown display="dynamic" placement="bottom-right">
+                <a class="nav-link" style="cursor: pointer" ngbDropdownToggle id="navbarDropdown" role="button">
+                    <fa-icon icon="user"></fa-icon> {{ username }}
+                </a>
+                <div ngbDropdownMenu aria-labelledby="navbarDropdown" class="dropdown-menu">
+                    <a ngbDropdownItem (click)="changePassword()" href="#">
+                        <fa-icon icon="unlock-alt"></fa-icon> Change password
+                    </a>
+                    <a ngbDropdownItem (click)="onItemClicked()" [routerLink]="['/logout']">
+                        <fa-icon icon="sign-out-alt"></fa-icon> Sign out
+                    </a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</nav>

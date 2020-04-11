@@ -1,0 +1,50 @@
+<div class="btn-toolbar mb-2" role="toolbar">
+    <div class="btn-group mr-2" role="group">
+        <button class="btn btn-primary" (click)="createKey()">
+            <fa-icon icon="plus"></fa-icon>
+            Create new access key
+        </button>
+    </div>
+
+    <div class="btn-group mr-2" role="group">
+        <button type="button" class="btn btn-secondary" (click)="refresh()">
+            <fa-icon icon="sync-alt"></fa-icon>
+            Refresh
+        </button>
+    </div>
+</div>
+
+<div class="alert alert-warning mt-2" *ngIf="accessKeys.length === 0">
+    No access keys are available.
+</div>
+
+<table class="table" *ngIf="accessKeys.length > 0">
+    <thead>
+        <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Label</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody *ngFor="let accessKey of accessKeys">
+        <tr>
+            <th scope="row">
+                <samp>#{{ accessKey.id }}</samp>
+            </th>
+            <td>
+                <span *ngIf="!!accessKey.label">
+                    {{ accessKey.label }}
+                </span>
+                <i *ngIf="!accessKey.label">Unnamed access key</i>
+            </td>
+            <td>
+                <button type="button" class="btn btn-outline-primary" (click)="showKey(accessKey)">
+                    <fa-icon icon="eye"></fa-icon> Show key
+                </button>
+                <button type="button" class="btn btn-outline-danger" (click)="deleteKey(accessKey)">
+                    <fa-icon icon="trash"></fa-icon> Delete
+                </button>
+            </td>
+        </tr>
+    </tbody>
+</table>

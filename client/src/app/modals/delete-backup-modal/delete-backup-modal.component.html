@@ -1,0 +1,27 @@
+<div class="modal-header">
+    <h4 class="modal-title">Confirm backup deletion</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss()" [disabled]="isBusy">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <p>
+        Are you sure you want to delete backup <samp>{{ backup.id }}</samp>
+        of project <samp>{{ project.id }}</samp>?
+        This action cannot be undone.
+    </p>
+    <p class="alert alert-danger" *ngIf="!!error">
+        <strong>Error: </strong> {{ error }}
+    </p>
+</div>
+<div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="ok()" [disabled]="isBusy">
+        <fa-icon *ngIf="!isBusy" icon="trash"></fa-icon>
+        <fa-icon *ngIf="isBusy" icon="spinner" [spin]="true"></fa-icon>
+        Delete
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="dismiss()" [disabled]="isBusy">
+        <fa-icon icon="times"></fa-icon>
+        Cancel
+    </button>
+</div>

@@ -7,6 +7,36 @@ import (
 	"time"
 )
 
+// NotificationParams contains list of targets to send notifications to
+type NotificationParams struct {
+	Enabled       bool     `json:"enabled"`
+	SlackUsers    []string `json:"slack"`
+	TelegramUsers []string `json:"telegram"`
+	Webhooks      []string `json:"webhook"`
+}
+
+// String convers an object to string
+func (p *NotificationParams) String() string {
+	return toJSON(&p)
+}
+
+// ApplyTo applies request values to a NotificationParams
+func (p *NotificationParams) ApplyTo(proj *NotificationParams) {
+	proj.Enabled = p.Enabled
+
+	if p.SlackUsers != nil {
+		proj.SlackUsers = p.SlackUsers
+	}
+
+	if p.TelegramUsers != nil {
+		proj.SlackUsers = p.TelegramUsers
+	}
+
+	if p.Webhooks != nil {
+		proj.Webhooks = p.Webhooks
+	}
+}
+
 // BackupStatus represent backup status for a project
 type BackupStatus string
 
@@ -23,18 +53,15 @@ const (
 
 // Project contains information about project
 type Project struct {
-	ID               string       `json:"id"`
-	Name             string       `json:"name"`
-	Retain           int          `json:"retain"`
-	Enable           bool         `json:"enable"`
-	Notify           bool         `json:"notify"`
-	Period           int          `json:"period"`
-	BackupStatus     BackupStatus `json:"backup_status"`
-	LastBackup       *Backup      `json:"last_backup"`
-	SlackUsers       []string     `json:"slack"`
-	TelegramUsers    []string     `json:"telegram"`
-	Webhooks         []string     `json:"webhook"`
-	LastNotification *time.Time   `json:"-"`
+	ID               string              `json:"id"`
+	Name             string              `json:"name"`
+	IsActive         bool                `json:"isActive"`
+	BackupRetention  int                 `json:"backupRetention"`
+	BackupFrequency  int                 `json:"backupFrequency"`
+	Notifications    *NotificationParams `json:"notifications"`
+	BackupStatus     BackupStatus        `json:"backupStatus"`
+	LastBackup       *Backup             `json:"lastBackup"`
+	LastNotification *time.Time          `json:"-"`
 }
 
 const (
@@ -56,7 +83,7 @@ func (p *Project) CalcBackupStatus(lastBackup *Backup) BackupStatus {
 	}
 
 	t := time.Now().UTC().Sub(lastBackup.Time)
-	if t.Seconds() > float64(p.Period) {
+	if t.Seconds() > float64(p.BackupFrequency) {
 		return BackupStatusOutdated
 	}
 
@@ -68,15 +95,13 @@ type Projects []*Project
 
 // ProjectCreateParams contains parameters for project creation
 type ProjectCreateParams struct {
-	ID            string    `json:"id" binding:"required"`
-	Name          string    `json:"name" binding:"required"`
-	Retain        *int      `json:"retain"`
-	Period        *int      `json:"period"`
-	Enable        *bool     `json:"enable"`
-	Notify        *bool     `json:"notify"`
-	SlackUsers    *[]string `json:"slack"`
-	TelegramUsers *[]string `json:"telegram"`
-	Webhooks      *[]string `json:"webhook"`
+	ID              string              `json:"id" binding:"required"`
+	Name            string              `json:"name" binding:"required"`
+	BackupRetention *int                `json:"backupRetention"`
+	BackupFrequency *int                `json:"backupFrequency"`
+	Enable          *bool               `json:"isActive"`
+	Notifications   *NotificationParams `json:"notifications"`
+	Webhooks        *[]string           `json:"webhook"`
 }
 
 // Normalize normalizes request's fields
@@ -97,12 +122,12 @@ func (p *ProjectCreateParams) Validate() error {
 		return NewError(EBadRequest, fmt.Sprintf("\"%s\" is not a valid project ID", p.ID))
 	}
 
-	if p.Retain != nil && *p.Retain < 0 {
-		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup retention", *p.Retain))
+	if p.BackupRetention != nil && *p.BackupRetention < 0 {
+		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup retention", *p.BackupRetention))
 	}
 
-	if p.Period != nil && *p.Period < 0 {
-		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup check period", *p.Period))
+	if p.BackupFrequency != nil && *p.BackupFrequency < 0 {
+		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup check period", *p.BackupFrequency))
 	}
 
 	return nil
@@ -113,46 +138,39 @@ func (p *ProjectCreateParams) ApplyTo(proj *Project) {
 	proj.ID = p.ID
 	proj.Name = p.Name
 
-	if p.Retain != nil {
-		proj.Retain = *p.Retain
+	if p.BackupRetention != nil {
+		proj.BackupRetention = *p.BackupRetention
 	} else {
-		proj.Retain = DefaultRetain
+		proj.BackupRetention = DefaultRetain
 	}
 
-	if p.Period != nil {
-		proj.Period = *p.Period
+	if p.BackupFrequency != nil {
+		proj.BackupFrequency = *p.BackupFrequency
 	} else {
-		proj.Period = DefaultPeriod
+		proj.BackupFrequency = DefaultPeriod
 	}
 
 	if p.Enable != nil {
-		proj.Enable = *p.Enable
+		proj.IsActive = *p.Enable
 	} else {
-		proj.Enable = false
+		proj.IsActive = false
 	}
 
-	if p.Notify != nil {
-		proj.Notify = *p.Notify
+	if p.Notifications != nil {
+		if proj.Notifications != nil {
+			p.Notifications.ApplyTo(proj.Notifications)
+		} else {
+			proj.Notifications = p.Notifications
+		}
 	} else {
-		proj.Notify = false
-	}
-
-	if p.SlackUsers != nil {
-		proj.SlackUsers = *p.SlackUsers
-	} else {
-		proj.SlackUsers = make([]string, 0)
-	}
-
-	if p.TelegramUsers != nil {
-		proj.TelegramUsers = *p.TelegramUsers
-	} else {
-		proj.TelegramUsers = make([]string, 0)
-	}
-
-	if p.Webhooks != nil {
-		proj.Webhooks = *p.Webhooks
-	} else {
-		proj.Webhooks = make([]string, 0)
+		if proj.Notifications == nil {
+			proj.Notifications = &NotificationParams{
+				Enabled:       false,
+				SlackUsers:    make([]string, 0),
+				TelegramUsers: make([]string, 0),
+				Webhooks:      make([]string, 0),
+			}
+		}
 	}
 }
 
@@ -163,15 +181,12 @@ func (p *ProjectCreateParams) String() string {
 
 // ProjectUpdateParams contains parameters for project modification
 type ProjectUpdateParams struct {
-	Name             *string    `json:"name"`
-	Retain           *int       `json:"retain"`
-	Period           *int       `json:"period"`
-	Enable           *bool      `json:"enable"`
-	Notify           *bool      `json:"notify"`
-	SlackUsers       *[]string  `json:"slack"`
-	TelegramUsers    *[]string  `json:"telegram"`
-	Webhooks         *[]string  `json:"webhook"`
-	LastNotification *time.Time `json:"-"`
+	Name             *string             `json:"name"`
+	BackupRetention  *int                `json:"backupRetention"`
+	BackupFrequency  *int                `json:"backupFrequency"`
+	IsActive         *bool               `json:"isActive"`
+	Notifications    *NotificationParams `json:"notifications"`
+	LastNotification *time.Time          `json:"-"`
 }
 
 // Normalize normalizes request's fields
@@ -183,12 +198,12 @@ func (p *ProjectUpdateParams) Normalize() {
 
 // Validate validates request's fields
 func (p *ProjectUpdateParams) Validate() error {
-	if p.Retain != nil && *p.Retain < 0 {
-		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup retention", *p.Retain))
+	if p.BackupRetention != nil && *p.BackupRetention < 0 {
+		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup retention", *p.BackupRetention))
 	}
 
-	if p.Period != nil && *p.Period < 0 {
-		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup check period", *p.Period))
+	if p.BackupFrequency != nil && *p.BackupFrequency < 0 {
+		return NewError(EBadRequest, fmt.Sprintf("\"%d\" is not a valid backup check period", *p.BackupFrequency))
 	}
 
 	return nil
@@ -205,35 +220,32 @@ func (p *ProjectUpdateParams) ApplyTo(proj *Project) {
 		proj.Name = *p.Name
 	}
 
-	if p.Retain != nil {
-		proj.Retain = *p.Retain
+	if p.BackupRetention != nil {
+		proj.BackupRetention = *p.BackupRetention
 	}
 
-	if p.Period != nil {
-		proj.Period = *p.Period
+	if p.BackupFrequency != nil {
+		proj.BackupFrequency = *p.BackupFrequency
 	}
 
-	if p.Enable != nil {
-		proj.Enable = *p.Enable
+	if p.IsActive != nil {
+		proj.IsActive = *p.IsActive
 	}
 
-	if p.Notify != nil {
-		proj.Notify = *p.Notify
-	}
-
-	if p.LastNotification != nil {
-		proj.LastNotification = p.LastNotification
-	}
-
-	if p.SlackUsers != nil {
-		proj.SlackUsers = *p.SlackUsers
-	}
-
-	if p.TelegramUsers != nil {
-		proj.TelegramUsers = *p.TelegramUsers
-	}
-
-	if p.Webhooks != nil {
-		proj.Webhooks = *p.Webhooks
+	if p.Notifications != nil {
+		if proj.Notifications != nil {
+			p.Notifications.ApplyTo(proj.Notifications)
+		} else {
+			proj.Notifications = p.Notifications
+		}
+	} else {
+		if proj.Notifications == nil {
+			proj.Notifications = &NotificationParams{
+				Enabled:       false,
+				SlackUsers:    make([]string, 0),
+				TelegramUsers: make([]string, 0),
+				Webhooks:      make([]string, 0),
+			}
+		}
 	}
 }

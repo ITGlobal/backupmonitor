@@ -72,13 +72,13 @@ func (controller *backupController) Upload(c *gin.Context) {
 
 	accessKey, err := controller.accessRepo.Get(key)
 	if accessKey == nil {
-		c.JSON(403, model.NewError(model.EBadRequest, "access denied"))
+		c.JSON(403, model.NewError(model.EAccessDenied, "access denied"))
 		return
 	}
 
 	form, err := c.MultipartForm()
 	if err != nil {
-		c.JSON(403, model.NewError(model.EBadRequest, "not a multipart form"))
+		c.JSON(400, model.NewError(model.EBadRequest, "not a multipart form"))
 		return
 	}
 

@@ -10,8 +10,15 @@ import (
 )
 
 func (s *server) ConfigureProjectsAPI() {
-	repository := service.GetProjectRepository(s.services)
-	controller := &projectController{repository}
+	projectRepository := service.GetProjectRepository(s.services)
+	accessKeyRepository := service.GetAccessKeyRepository(s.services)
+	backupRepository := service.GetBackupRepository(s.services)
+
+	controller := &projectController{
+		projectRepository:   projectRepository,
+		accessKeyRepository: accessKeyRepository,
+		backupRepository:    backupRepository,
+	}
 
 	s.authorized.GET("/api/projects", controller.List)
 	s.authorized.GET("/api/projects/:id", controller.Get)
@@ -21,7 +28,9 @@ func (s *server) ConfigureProjectsAPI() {
 }
 
 type projectController struct {
-	repository service.ProjectRepository
+	projectRepository   service.ProjectRepository
+	accessKeyRepository service.AccessKeyRepository
+	backupRepository    service.BackupRepository
 }
 
 // @Summary List projects
@@ -32,7 +41,7 @@ type projectController struct {
 // @Failure 401 {object} model.Error
 // @Failure 403 {object} model.Error
 func (controller *projectController) List(c *gin.Context) {
-	list, err := controller.repository.List()
+	list, err := controller.projectRepository.List()
 	if err != nil {
 		processError(c, err)
 		return
@@ -53,7 +62,7 @@ func (controller *projectController) List(c *gin.Context) {
 func (controller *projectController) Get(c *gin.Context) {
 	id := c.Param("id")
 
-	p, err := controller.repository.Get(id)
+	p, err := controller.projectRepository.Get(id)
 	if err != nil {
 		processError(c, err)
 		return
@@ -80,7 +89,7 @@ func (controller *projectController) Post(c *gin.Context) {
 		return
 	}
 
-	p, err := controller.repository.Create(&req)
+	p, err := controller.projectRepository.Create(&req)
 	if err != nil {
 		processError(c, err)
 		return
@@ -110,7 +119,7 @@ func (controller *projectController) Put(c *gin.Context) {
 		return
 	}
 
-	p, err := controller.repository.Update(id, &req)
+	p, err := controller.projectRepository.Update(id, &req)
 	if err != nil {
 		processError(c, err)
 		return
@@ -130,7 +139,47 @@ func (controller *projectController) Put(c *gin.Context) {
 func (controller *projectController) Delete(c *gin.Context) {
 	id := c.Param("id")
 
-	err := controller.repository.Delete(id)
+	// Mark projects as disabled
+	isActive := false
+	req := &model.ProjectUpdateParams{
+		IsActive: &isActive,
+	}
+	_, err := controller.projectRepository.Update(id, req)
+	if err != nil {
+		processError(c, err)
+		return
+	}
+
+	// Drop all access keys
+	accessKeys, err := controller.accessKeyRepository.List(id)
+	if err != nil {
+		processError(c, err)
+		return
+	}
+	for _, accessKey := range accessKeys {
+		err = controller.accessKeyRepository.Delete(id, accessKey.ID)
+		if err != nil {
+			processError(c, err)
+			return
+		}
+	}
+
+	// Drop all backups
+	backups, err := controller.backupRepository.List(id)
+	if err != nil {
+		processError(c, err)
+		return
+	}
+	for _, backup := range backups {
+		err = controller.backupRepository.Delete(backup.ID, "project deletion")
+		if err != nil {
+			processError(c, err)
+			return
+		}
+	}
+
+	// Drop project
+	err = controller.projectRepository.Delete(id)
 	if err != nil {
 		processError(c, err)
 		return

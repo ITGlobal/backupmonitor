@@ -2,3 +2,10 @@ backupmonitor
 backupmonitor.exe*
 var/**
 .env
+www/**
+client/node_modules/**
+Dockerfile
+**/*.md
+LICENSE
+Makefile
+scripts/**

@@ -36,8 +36,8 @@ type Users []*User
 
 // UserChangePasswordRequest contains parameters to change user's password
 type UserChangePasswordRequest struct {
-	OldPassword string `json:"old_password"`
-	NewPassword string `json:"new_password"`
+	OldPassword string `json:"oldPassword"`
+	NewPassword string `json:"newPassword"`
 }
 
 // String convers an object to string

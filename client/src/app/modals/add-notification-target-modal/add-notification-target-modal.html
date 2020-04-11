@@ -1,0 +1,36 @@
+<form (ngSubmit)="ok()">
+    <div class="modal-header">
+        <h4 class="modal-title">Create new notification target</h4>
+        <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <label>Send notification via</label>
+            <select class="form-control" name="type" [(ngModel)]="type" required>
+                <option value="slack">Slack</option>
+                <option value="telegram">Telegram</option>
+                <option value="webhook">Webhook</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>Send notification to</label>
+            <input type="text" class="form-control {{ !!valueError && 'is-invalid' }}" name="value" [(ngModel)]="value"
+                required autofocus>
+            <small class="form-text text-danger">
+                {{ valueError }}
+            </small>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary">
+            <fa-icon icon="check"></fa-icon>
+            Add
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="dismiss()">
+            <fa-icon icon="times"></fa-icon>
+            Cancel
+        </button>
+    </div>
+</form>

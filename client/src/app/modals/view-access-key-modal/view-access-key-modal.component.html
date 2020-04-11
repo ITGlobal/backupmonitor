@@ -1,0 +1,28 @@
+<div class="modal-header">
+    <h4 class="modal-title">Access key #{{ accessKey.id }}</h4>
+    <button type="button" class="close" aria-label="Close" (click)="dismiss()">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="modal-body">
+    <div class="form-group">
+        <label>Access key value</label>
+        <div class="input-group mb-3">
+            <input type="text" class="form-control" [value]="accessKey.key" readonly>
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary" type="button" (click)="copy()" title="Copy to clipboard">
+                    <fa-icon icon="copy"></fa-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal-footer">
+    <span class="mr-auto">
+        {{ copyStatus }}
+    </span>
+    <button type="button" class="btn btn-primary" (click)="dismiss()">
+        <fa-icon icon="check"></fa-icon>
+        OK
+    </button>
+</div>
