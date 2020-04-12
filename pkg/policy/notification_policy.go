@@ -141,7 +141,7 @@ func (s *notificationPolicy) SendNotification(project *model.Project) error {
 	}
 
 	if project.LastBackup != nil {
-		payloadJSON["last_backup_time"] = project.LastBackup.Time
+		payloadJSON["lastBackupTime"] = project.LastBackup.Time
 	}
 
 	err = s.notificationService.NotifyWebhook(&notify.WebhookMessage{

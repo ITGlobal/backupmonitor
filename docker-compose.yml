@@ -1,5 +1,5 @@
-version: '3'
-services: 
+version: "3"
+services:
   backupmanager:
     image: backupmanager:latest
     build:
@@ -7,7 +7,25 @@ services:
     env_file: .env
     ports:
       - 8000:8000
-    volumes: 
-      - ./data:/var/backupmanager
-    environment: 
-      VAR: '/var/backupmanager'
+    volumes:
+      - ./var/app:/var/backupmanager
+    environment:
+      - VAR=/var/backupmanager
+      - LISTEN_ADDR=0.0.0.0:8000
+
+  caddy:
+    image: abiosoft/caddy:no-stats
+    restart: always
+    depends_on:
+      - backupmanager
+    volumes:
+      - ./scripts/Caddyfile:/etc/Caddyfile
+      - ./var/caddy/data:/root/.caddy
+      - ./var/caddy/logs:/srv/logs
+    env_file: .env
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      - ACME_AGREE=true
+      - BACKEND_URL=http://backupmanager:8000

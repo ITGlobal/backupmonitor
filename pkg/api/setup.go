@@ -6,7 +6,7 @@ import (
 	"net/http"
 	"path"
 	"path/filepath"
-	"sync"	
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -65,14 +65,13 @@ func createComponent(c di.Container) (component.T, error) {
 	server.ConfigureStaticFiles()
 
 	http.Handle("/", server.router)
-	//http.Handle("/", http.FileServer(http.Dir("./www")))
 
 	return server, nil
 }
 
 func (s *server) ConfigureStaticFiles() {
-	
-	s.router.NoRoute(func (c *gin.Context) {
+
+	s.router.NoRoute(func(c *gin.Context) {
 		dir, file := path.Split(c.Request.RequestURI)
 		ext := filepath.Ext(file)
 		if file == "" || ext == "" {
@@ -82,7 +81,6 @@ func (s *server) ConfigureStaticFiles() {
 		}
 	})
 }
-
 
 func (s *server) Start(group *sync.WaitGroup, stop chan interface{}) {
 	group.Add(1)

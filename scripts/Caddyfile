@@ -1,0 +1,16 @@
+{$DOMAIN} {
+    tls {
+        protocols tls1.0 tls1.2
+        max_certs 1
+    }
+    errors stderr
+    proxy / {$BACKEND_URL} {
+        transparent
+    }
+    log / logs/{$DOMAIN}.log "{when} {proto} {method} {scheme}://{hostonly}{uri} {request_body} {>Referer} -> {status} {size} bytes in {latency} from {remote} [{>User-Agent}]" {
+        rotate_size 50
+        rotate_age  90
+        rotate_keep 20
+        rotate_compress
+    }
+}

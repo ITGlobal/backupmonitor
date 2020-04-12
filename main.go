@@ -21,7 +21,6 @@ func configure() error {
 	cwd, _ := os.Getwd()
 	viper.SetDefault("VAR", path.Join(cwd, "var"))
 	viper.SetDefault("JWT_KEY", "test")
-	viper.SetDefault("S3_REGION", "us-east-1")
 	viper.SetDefault("LISTEN_ADDR", "0.0.0.0:8000")
 
 	viper.AutomaticEnv()
@@ -35,12 +34,6 @@ func configure() error {
 			panic(err)
 		}
 	}
-
-	log.Printf("config: [")
-	for _, k := range viper.AllKeys() {
-		log.Printf("  %s=\"%s\"", k, viper.Get(k))
-	}
-	log.Printf("]")
 
 	return nil
 }
