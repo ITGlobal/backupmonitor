@@ -23,25 +23,18 @@ replace github.com/itglobal/backupmonitor/pkg/policy => ./pkg/policy
 replace github.com/itglobal/backupmonitor/pkg/notify => ./pkg/notify
 
 require (
-	github.com/gin-gonic/gin v1.6.2 // indirect
-	github.com/go-ini/ini v1.55.0 // indirect
-	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible // indirect
-	github.com/hackebrot/turtle v0.1.0 // indirect
-	github.com/itglobal/backupmonitor/doc v0.0.0-00010101000000-000000000000 // indirect
+	github.com/google/go-cmp v0.3.0 // indirect
+	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
+	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/itglobal/backupmonitor/pkg/api v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/component v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/database v0.0.0-00010101000000-000000000000
-	github.com/itglobal/backupmonitor/pkg/model v0.0.0-00010101000000-000000000000 // indirect
 	github.com/itglobal/backupmonitor/pkg/notify v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/policy v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/service v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/storage v0.0.0-00010101000000-000000000000
-	github.com/itglobal/backupmonitor/pkg/util v0.0.0-00010101000000-000000000000 // indirect
-	github.com/jinzhu/gorm v1.9.12 // indirect
-	github.com/m1/go-generate-password v0.0.0-20191114193340-84682ecbc3fd // indirect
-	github.com/minio/minio-go v6.0.14+incompatible // indirect
-	github.com/slack-go/slack v0.6.3 // indirect
+	github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304 // indirect
 	github.com/spf13/viper v1.6.2
-	github.com/swaggo/gin-swagger v1.2.0 // indirect
-	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
+	golang.org/x/net v0.0.0-20191126235420-ef20fe5d7933 // indirect
+	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

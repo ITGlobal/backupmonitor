@@ -6,6 +6,7 @@ replace github.com/itglobal/backupmonitor/pkg/component => ../component
 
 require (
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.4+incompatible
+	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/hackebrot/turtle v0.1.0
 	github.com/itglobal/backupmonitor/pkg/component v0.0.0-00010101000000-000000000000
 	github.com/sarulabs/di v2.0.0+incompatible
