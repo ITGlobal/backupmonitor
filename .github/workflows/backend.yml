@@ -1,0 +1,27 @@
+name: backend
+on: push
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        go: ["1.14"]
+      fail-fast: true
+    env:
+      GO111MODULE: "on"
+      RUNNER_TEMP: "/tmp/"
+    steps:
+      - uses: actions/checkout@v1
+      - run: apt-get update && apt-get install -y git gcc
+      - uses: actions/setup-go@v2-beta
+        with:
+          go-version: ${{ matrix.go }}
+      - run: go get -u github.com/swaggo/swag/cmd/swag
+      - uses: actions/cache@v1
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
+      - run: swag init -o ./doc/ -g swagger.go -d ./pkg/api/
+      - run: go build
