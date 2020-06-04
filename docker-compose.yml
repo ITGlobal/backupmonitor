@@ -5,8 +5,6 @@ services:
     build:
       context: .
     env_file: .env
-    ports:
-      - 8000:8000
     volumes:
       - ./var/app:/var/backupmanager
     environment:
@@ -19,7 +17,7 @@ services:
     depends_on:
       - backupmanager
     volumes:
-      - ./scripts/Caddyfile:/etc/Caddyfile
+      - ./etc/Caddyfile:/etc/Caddyfile
       - ./var/caddy/data:/root/.caddy
       - ./var/caddy/logs:/srv/logs
     env_file: .env

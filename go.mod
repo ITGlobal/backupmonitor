@@ -25,7 +25,6 @@ replace github.com/itglobal/backupmonitor/pkg/notify => ./pkg/notify
 require (
 	github.com/google/go-cmp v0.3.0 // indirect
 	github.com/gopherjs/gopherjs v0.0.0-20181103185306-d547d1d9531e // indirect
-	github.com/hackebrot/go-repr v0.1.0 // indirect
 	github.com/itglobal/backupmonitor/pkg/api v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/component v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/database v0.0.0-00010101000000-000000000000
@@ -33,6 +32,7 @@ require (
 	github.com/itglobal/backupmonitor/pkg/policy v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/service v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/storage v0.0.0-00010101000000-000000000000
+	github.com/pkg/errors v0.8.1 // indirect
 	github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304 // indirect
 	github.com/spf13/viper v1.6.2
 	golang.org/x/net v0.0.0-20191126235420-ef20fe5d7933 // indirect
