@@ -3,6 +3,10 @@
 Small server-side app that serves a simple purpose:
 to receive, manage and monitor various backups.
 
+![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/itglobal/backupmonitor?style=flat-square)
+![Docker Pulls](https://img.shields.io/docker/pulls/itglobal/backupmonitor?style=flat-square)
+![GitHub](https://img.shields.io/github/license/itglobal/backupmonitor?style=flat-square)
+
 ![screenshot](screenshot.png)
 
 * [Features](#features)
