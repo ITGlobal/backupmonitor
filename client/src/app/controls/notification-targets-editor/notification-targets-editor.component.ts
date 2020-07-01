@@ -1,6 +1,6 @@
 import { Component, OnInit, forwardRef, Input } from '@angular/core';
 import { NG_VALUE_ACCESSOR, ControlValueAccessor } from '@angular/forms';
-import { INotificationParams } from 'src/app/api.service';
+import { INotificationParams, ApiService } from 'src/app/api.service';
 import {
   IAddNotificationTargetModalResult,
   NotificationTargetType,
@@ -24,7 +24,7 @@ interface INotificationTarget {
   }]
 })
 export class NotificationTargetsEditorComponent implements ControlValueAccessor {
-  constructor(private modalService: NgbModal) { }
+  constructor(private modalService: NgbModal, private api: ApiService) { }
 
   @Input()
   readonly: boolean;
@@ -156,5 +156,20 @@ export class NotificationTargetsEditorComponent implements ControlValueAccessor 
         break;
     }
   }
+
+  testTarget(type: NotificationTargetType, value: string) {
+    switch (type) {
+      case 'slack':
+        this.api.testSlackNotification(value).subscribe();
+        break;
+      case 'telegram':
+        this.api.testTelegramNotification(value).subscribe();
+        break;
+      case 'webhook':
+        this.api.testWebhookNotification(value).subscribe();
+        break;
+    }
+  }
+
 
 }

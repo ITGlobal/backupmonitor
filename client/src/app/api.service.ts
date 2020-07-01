@@ -261,6 +261,39 @@ export class ApiService {
       );
   }
 
+  public testSlackNotification(target: string): Observable<void> {
+    return this.http.post<void>('/api/notify/slack', { target }, {
+      headers: {
+        Authorization: `Bearer ${this.token}`
+      }
+    })
+      .pipe(
+        catchError(ApiService.handleError)
+      );
+  }
+
+  public testTelegramNotification(target: string): Observable<void> {
+    return this.http.post<void>('/api/notify/telegram', { target }, {
+      headers: {
+        Authorization: `Bearer ${this.token}`
+      }
+    })
+      .pipe(
+        catchError(ApiService.handleError)
+      );
+  }
+
+  public testWebhookNotification(target: string): Observable<void> {
+    return this.http.post<void>('/api/notify/webhook', { target }, {
+      headers: {
+        Authorization: `Bearer ${this.token}`
+      }
+    })
+      .pipe(
+        catchError(ApiService.handleError)
+      );
+  }
+
   private static handleError(error: HttpErrorResponse) {
     if (error.error?.message) {
       return throwError(error.error?.message);

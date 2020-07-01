@@ -34,6 +34,7 @@
                 <tr>
                     <th scope="col">Type</th>
                     <th scope="col">Value</th>
+                    <th scope="col"></th>
                     <th scope="col" *ngIf="!readonly"></th>
                 </tr>
             </thead>
@@ -47,8 +48,14 @@
                             {{ target.value }}
                         </samp>
                     </td>
+                    <td>
+                        <button type="button" class="btn btn-outline-primary btn-sm"
+                            (click)="testTarget(target.type, target.value)">
+                            <fa-icon icon="paper-plane"></fa-icon> Test
+                        </button>
+                    </td>
                     <td *ngIf="!readonly">
-                        <button type="button" class="btn btn-outline-danger"
+                        <button type="button" class="btn btn-outline-danger btn-sm"
                             (click)="removeTarget(target.type, target.value)" [disabled]="readonly || disabled">
                             <fa-icon icon="trash"></fa-icon> Delete
                         </button>

@@ -1,5 +1,5 @@
 package doc
 
-// Left empty oon purpose
+// Left empty on purpose
 
 func init() {}

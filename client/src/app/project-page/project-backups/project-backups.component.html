@@ -36,11 +36,11 @@
                 {{ backup.filename }}
             </td>
             <td>
-                <a href="{{ getBackupDownloadUrl(backup) }}" class="btn btn-outline-primary" target="_blank">
+                <a href="{{ getBackupDownloadUrl(backup) }}" class="btn btn-outline-primary btn-sm" target="_blank">
                     <fa-icon icon="file-download"></fa-icon> Download
                 </a>
 
-                <button type="button" class="btn btn-outline-danger" (click)="deleteBackup(backup)">
+                <button type="button" class="btn btn-outline-danger btn-sm" (click)="deleteBackup(backup)">
                     <fa-icon icon="trash"></fa-icon> Delete
                 </button>
             </td>
