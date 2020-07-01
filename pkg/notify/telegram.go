@@ -58,14 +58,18 @@ type enabledTelegramNotifyer struct {
 }
 
 func (s *enabledTelegramNotifyer) Notify(msg *TelegramMessage) error {
-
-	emoji, ok := turtle.Emojis[msg.Emoji]
-
 	var text string
-	if ok {
-		text = fmt.Sprintf("%s %s\n\n%s", emoji, msg.Title, msg.Text)
-	} else {
-		text = fmt.Sprintf("%s\n\n%s", msg.Title, msg.Text)
+
+	text = msg.Title
+	if msg.Text !="" {
+		text = fmt.Sprintf("%s\n\n%s", msg.Title, text)
+	}
+
+	if msg.Emoji != "" {
+		emoji, ok := turtle.Emojis[msg.Emoji]
+		if ok {
+			text = fmt.Sprintf("%s %s", emoji, text)
+		}
 	}
 
 	for _, to := range msg.To {

@@ -53,13 +53,18 @@ type enabledSlackNotifyer struct {
 func (s *enabledSlackNotifyer) Notify(msg *SlackMessage) error {
 	options := make([]slack.MsgOption, 0)
 	options = append(options, slack.MsgOptionText(msg.Title, true))
-	a := slack.Attachment{
-		Text: msg.Text,
+
+	if msg.Text != "" {
+		a := slack.Attachment{
+			Text: msg.Text,
+		}
+		options = append(options, slack.MsgOptionAttachments(a))
 	}
-	options = append(options, slack.MsgOptionAttachments(a))
+
 	if msg.Emoji != "" {
 		options = append(options, slack.MsgOptionIconEmoji(msg.Emoji))
 	}
+
 	if s.username != "" {
 		options = append(options, slack.MsgOptionUsername(s.username))
 	}

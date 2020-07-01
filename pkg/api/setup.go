@@ -62,6 +62,7 @@ func createComponent(c di.Container) (component.T, error) {
 	server.ConfigureProjectsAPI()
 	server.ConfigureBackupAPI()
 	server.ConfigureAccessAPI()
+	server.ConfigureNotifyAPI()
 	server.ConfigureStaticFiles()
 
 	http.Handle("/", server.router)
