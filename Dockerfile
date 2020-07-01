@@ -13,7 +13,7 @@ RUN go get -u github.com/swaggo/swag/cmd/swag
 COPY . .
 RUN mkdir -p /out/doc
 RUN go get
-RUN swag init --output /out/doc/ --generalInfo swagger.go --dir ./pkg/api/
+RUN swag init --output /out/doc/ --generalInfo swagger.go --dir ./pkg/api/ --parseDependency --parseInternal
 RUN go build -o /out/backupmonitor
 COPY ./doc /out/
 
