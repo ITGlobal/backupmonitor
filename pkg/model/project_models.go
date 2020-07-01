@@ -25,15 +25,15 @@ func (p *NotificationParams) ApplyTo(proj *NotificationParams) {
 	proj.Enabled = p.Enabled
 
 	if p.SlackUsers != nil {
-		proj.SlackUsers = p.SlackUsers
+		proj.SlackUsers = append([]string{}, p.SlackUsers...)
 	}
 
 	if p.TelegramUsers != nil {
-		proj.SlackUsers = p.TelegramUsers
+		proj.TelegramUsers = append([]string{}, p.TelegramUsers...)
 	}
 
 	if p.Webhooks != nil {
-		proj.Webhooks = p.Webhooks
+		proj.Webhooks = append([]string{}, p.Webhooks...)
 	}
 }
 

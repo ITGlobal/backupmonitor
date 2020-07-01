@@ -4,5 +4,6 @@
         "README.md": [
             "# Backup Monitor",
         ]
-    }
+    },
+    "go.useLanguageServer": true
 }

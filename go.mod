@@ -32,9 +32,10 @@ require (
 	github.com/itglobal/backupmonitor/pkg/policy v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/service v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/storage v0.0.0-00010101000000-000000000000
-	github.com/pkg/errors v0.8.1 // indirect
 	github.com/smartystreets/assertions v0.0.0-20190116191733-b6c0e53d7304 // indirect
 	github.com/spf13/viper v1.6.2
-	golang.org/x/net v0.0.0-20191126235420-ef20fe5d7933 // indirect
+	golang.org/x/mod v0.3.0 // indirect
+	golang.org/x/net v0.0.0-20200625001655-4c5254603344 // indirect
+	golang.org/x/tools v0.0.0-20200701041122-1837592efa10 // indirect
 	gopkg.in/check.v1 v1.0.0-20190902080502-41f04d3bba15 // indirect
 )

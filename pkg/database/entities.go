@@ -77,9 +77,9 @@ func (p *Project) CopyToModel(m *model.Project) {
 	}
 
 	m.Notifications.Enabled = p.EnableNotifications
-	m.Notifications.SlackUsers = p.commaSeparatedToStringArray(p.SlackUsers)
-	m.Notifications.TelegramUsers = p.commaSeparatedToStringArray(p.TelegramUsers)
-	m.Notifications.Webhooks = p.commaSeparatedToStringArray(p.Webhooks)
+	m.Notifications.SlackUsers = commaSeparatedToStringArray(p.SlackUsers)
+	m.Notifications.TelegramUsers = commaSeparatedToStringArray(p.TelegramUsers)
+	m.Notifications.Webhooks = commaSeparatedToStringArray(p.Webhooks)
 }
 
 // CopyFromModel copies model data to entity
@@ -94,9 +94,9 @@ func (p *Project) CopyFromModel(m *model.Project) {
 
 	if m.Notifications != nil {
 		p.EnableNotifications = m.Notifications.Enabled
-		p.SlackUsers = p.stringArrayToCommaSeparated(m.Notifications.SlackUsers)
-		p.TelegramUsers = p.stringArrayToCommaSeparated(m.Notifications.TelegramUsers)
-		p.Webhooks = p.stringArrayToCommaSeparated(m.Notifications.Webhooks)
+		p.SlackUsers = stringArrayToCommaSeparated(m.Notifications.SlackUsers)
+		p.TelegramUsers = stringArrayToCommaSeparated(m.Notifications.TelegramUsers)
+		p.Webhooks = stringArrayToCommaSeparated(m.Notifications.Webhooks)
 	} else {
 		p.EnableNotifications = false
 		p.SlackUsers = ""
@@ -106,12 +106,12 @@ func (p *Project) CopyFromModel(m *model.Project) {
 
 }
 
-func (p *Project) stringArrayToCommaSeparated(array []string) string {
+func stringArrayToCommaSeparated(array []string) string {
 	str := strings.Join(array, ";")
 	return str
 }
 
-func (p *Project) commaSeparatedToStringArray(str string) []string {
+func commaSeparatedToStringArray(str string) []string {
 	if str == "" {
 		return make([]string, 0)
 	}

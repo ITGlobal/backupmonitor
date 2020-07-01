@@ -17,17 +17,12 @@ func createSlackNotifyer(logger *log.Logger) slackNotifyer {
 	apiToken := viper.GetString("SLACK_TOKEN")
 	if apiToken != "" {
 		api := slack.New(apiToken)
-		profile, err := api.GetUserProfile("", false)
-		if err == nil {
-			logger.Printf("connected to slack as \"%s\"", profile.DisplayName)
-			return &enabledSlackNotifyer{
-				logger:   logger,
-				slack:    api,
-				username: viper.GetString("SLACK_USERNAME"),
-			}
+		logger.Printf("connected to slack")
+		return &enabledSlackNotifyer{
+			logger:   logger,
+			slack:    api,
+			username: viper.GetString("SLACK_USERNAME"),
 		}
-
-		logger.Printf("unable to connect to slack: %v", err)
 	} else {
 		logger.Printf("slack integration is disabled")
 	}
