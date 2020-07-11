@@ -12,7 +12,7 @@ jobs:
       RUNNER_TEMP: "/tmp/"
     steps:
       - uses: actions/checkout@v1
-      - run: apt-get update && apt-get install -y git gcc
+      - run: sudo apt-get update && sudo apt-get install -y git gcc
       - uses: actions/setup-go@v2-beta
         with:
           go-version: ${{ matrix.go }}
