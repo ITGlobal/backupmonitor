@@ -3,8 +3,8 @@
 Small server-side app that serves a simple purpose:
 to receive, manage and monitor various backups.
 
-![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/itglobal/backupmonitor?style=flat-square)
-![Docker Pulls](https://img.shields.io/docker/pulls/itglobal/backupmonitor?style=flat-square)
+[![Docker Cloud Build Status](https://img.shields.io/docker/cloud/build/itglobal/backupmonitor?style=flat-square)](https://hub.docker.com/r/itglobal/backupmonitor/builds)
+[![Docker Pulls](https://img.shields.io/docker/pulls/itglobal/backupmonitor?style=flat-square)](https://hub.docker.com/r/itglobal/backupmonitor)
 ![GitHub](https://img.shields.io/github/license/itglobal/backupmonitor?style=flat-square)
 
 ![screenshot](screenshot.png)
@@ -25,21 +25,36 @@ to receive, manage and monitor various backups.
 
 ## Features
 
-* App teceives a generic backup files via HTTP(S)
+* App receives a generic backup files via HTTP(S)
 * App stores backups either on local filesystem or on any S3-compatible service
 * App keeps at least N last backups for each target
 * App notifies your team via Slack/Telegram/Webhooks if something goes wrong
 
 ## Installation
 
-1. Clone git repository:
+1. Create a `docker-compose.yaml` file:
 
-   ```shell
-   git clone https://github.com/itglobal/backupmonitor.git
-   cd backupmonitor
+   ```yaml
+   version: "2"
+   services:
+     backupmanager:
+       image: itglobal/backupmonitor:latest
+       restart: always
+       env_file: .env
+       volumes:
+         - ./var/app:/var/backupmanager
+       environment:
+         - VAR=/var/backupmanager
+         - LISTEN_ADDR=0.0.0.0:8000
    ```
 
-2. Create `.env` file and configure it (see [section](#configuration) below).
+   Note that this is an example! You should add a HTTPS proxy for `backupmanager` container.
+   Exposing it directly to Internet is **not safe**.
+
+   It's recommended to use [https-portal](https://github.com/SteveLTN/https-portal) as a reverse proxy
+   or any other product as you see fit.
+
+2. Create a `.env` file and configure it (see [section](#configuration) below).
 
    At least you'll need to set two variables in `.env` file:
 
@@ -49,7 +64,7 @@ to receive, manage and monitor various backups.
 
    All other parameters are optional.
 
-3. Build and start docker containers:
+3. Start docker containers:
 
    ```shell
    docker-compose up -d
@@ -178,7 +193,7 @@ Due to Telegram API limitations you'll have to:
 * create a bot access token via [BotFather](https://t.me/BotFather)
 * create a private group for notifications
 * add your bot into group
-* find out group's numeric ID
+* [find out group's numeric ID](https://stackoverflow.com/questions/32423837/telegram-bot-how-to-get-a-group-chat-id)
 * use that ID to configure project notification
 
 ### Receive notifications via webhooks
