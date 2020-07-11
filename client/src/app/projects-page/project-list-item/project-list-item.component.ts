@@ -72,6 +72,7 @@ export class ProjectListItemComponent {
     }
 
     description += `Backups are expected to be taken every ${this.time.formatDuration(this.project.backupFrequency * 1000)}. `;
+    description += this.notificationsDescription;
     return description;
   }
 
@@ -86,9 +87,64 @@ export class ProjectListItemComponent {
       case 'none':
         return 'list-group-item-warning';
       case 'outdated':
-        return 'list-group-item-warning';
+        return 'list-group-item-danger';
     }
 
     return '';
+  }
+
+  get hasNotifications(): boolean {
+    if (!this.project.notifications.enabled) {
+      return false;
+    }
+
+    if (this.project.notifications.slack.length > 0) {
+      return true;
+    }
+
+    if (this.project.notifications.telegram.length > 0) {
+      return true;
+    }
+
+    if (this.project.notifications.webhook.length > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  get notificationsDescription(): string {
+    if (!this.hasNotifications) {
+      return 'No notifications are configured';
+    }
+
+    let text = '';
+    let shouldAddComma = false;
+
+    if (this.project.notifications.slack.length > 0) {
+      text += 'Slack';
+      shouldAddComma = true;
+    }
+
+    if (this.project.notifications.telegram.length > 0) {
+      if (!!text) {
+        text += ', ';
+      }
+
+      text += 'Telegram';
+      shouldAddComma = true;
+    }
+
+    if (this.project.notifications.webhook.length > 0) {
+      if (!!text) {
+        text += ', ';
+      }
+
+      text += 'Webhook';
+      shouldAddComma = true;
+    }
+
+    text = `Notifications are configured (${text}).`;
+    return text;
   }
 }

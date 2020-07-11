@@ -69,13 +69,20 @@ export class CreateProjectPageComponent implements OnInit {
     if (this.isBusy) {
       return;
     }
-    
+
     this.isBusy = true;
     this.error = undefined;
 
     const model: IProjectCreateParams = this.form.value;
     model.backupFrequency = parseInt(model.backupFrequency as any);
     model.backupRetention = parseInt(model.backupRetention as any);
+
+    const e = this.validate(model);
+    if (!!e) {
+      this.isBusy = false;
+      this.error = e;
+      return;
+    }
 
     this.api.createProject(model)
       .subscribe(
@@ -91,5 +98,17 @@ export class CreateProjectPageComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/projects']);
+  }
+
+  validate(model: IProjectCreateParams): string | null {
+    if (!model.id) {
+      return 'ID is not set';
+    }
+
+    if (!model.name) {
+      return 'Name is not set';
+    }
+
+    return null;
   }
 }

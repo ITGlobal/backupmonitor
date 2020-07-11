@@ -6,7 +6,7 @@
 
    ```shell
    make run
-   
+
    # or
 
    go build

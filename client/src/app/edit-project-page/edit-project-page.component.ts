@@ -27,7 +27,7 @@ export class EditProjectPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.isBusy = true;
-    
+
     this.route.paramMap.subscribe(
       (p) => {
         const id = p.get('id');
@@ -79,13 +79,20 @@ export class EditProjectPageComponent implements OnInit {
     if (this.isBusy) {
       return;
     }
-    
+
     this.isBusy = true;
     this.error = undefined;
 
     const model: IProjectUpdateParams = this.form.value;
     model.backupFrequency = parseInt(model.backupFrequency as any);
     model.backupRetention = parseInt(model.backupRetention as any);
+
+    const e = this.validate(model);
+    if (!!e) {
+      this.isBusy = false;
+      this.error = e;
+      return;
+    }
 
     this.api.updateProject(this.id, model)
       .subscribe(
@@ -101,5 +108,13 @@ export class EditProjectPageComponent implements OnInit {
 
   cancel() {
     this.router.navigate(['/projects', this.id]);
+  }
+
+  validate(model: IProjectUpdateParams): string | null {
+    if (!model.name) {
+      return 'Name is not set';
+    }
+
+    return null;
   }
 }

@@ -4,8 +4,20 @@
         <small>
             {{ backupStatusText }}
             <fa-icon [icon]="backupStatusIcon"></fa-icon>
-             </small>
+        </small>
     </div>
     <p class="mb-1">{{ project.name }}</p>
-    <small>{{ description }}</small>
+    <div class="d-flex w-100 justify-content-between">
+        <small>{{ description }}</small>
+        <div>
+            <fa-layers *ngIf="hasNotifications" [fixedWidth]="true">
+                <fa-icon [icon]="['fas', 'bullhorn']" transform="shrink-6"></fa-icon>
+            </fa-layers>
+
+            <fa-layers *ngIf="!hasNotifications" [fixedWidth]="true">
+                <fa-icon [icon]="['fas', 'ban']"  class="text-danger"></fa-icon>
+                <fa-icon [icon]="['fas', 'bullhorn']" transform="shrink-6"></fa-icon>
+            </fa-layers>
+        </div>
+    </div>
 </a>
