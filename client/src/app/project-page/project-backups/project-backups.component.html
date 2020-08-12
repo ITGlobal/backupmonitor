@@ -11,13 +11,14 @@
     No backups are available.
 </div>
 
-<table class="table" *ngIf="backups.length > 0">
+<table class="table table-hover" *ngIf="backups.length > 0">
     <thead>
         <tr>
             <th scope="col"></th>
             <th scope="col">ID</th>
             <th scope="col">Taken</th>
             <th scope="col">File name</th>
+            <th scope="col">File size</th>
             <th scope="col"></th>
         </tr>
     </thead>
@@ -34,6 +35,9 @@
             </td>
             <td>
                 {{ backup.filename }}
+            </td>
+            <td>
+                {{ getBackupSize(backup) }}
             </td>
             <td>
                 <a href="{{ getBackupDownloadUrl(backup) }}" class="btn btn-outline-primary btn-sm" target="_blank">

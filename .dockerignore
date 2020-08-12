@@ -9,3 +9,5 @@ Dockerfile
 LICENSE
 Makefile
 scripts/**
+.idea
+.vscode

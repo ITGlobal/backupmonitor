@@ -6,6 +6,7 @@ import { faStar as farStar } from '@fortawesome/free-regular-svg-icons';
 import { PrettyTimeService } from 'src/app/pretty-time.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { DeleteBackupModalComponent } from 'src/app/modals/delete-backup-modal/delete-backup-modal.component';
+import * as pretty from 'pretty-bytes';
 
 @Component({
   selector: 'app-project-backups',
@@ -39,6 +40,15 @@ export class ProjectBackupsComponent {
 
   getBackupDownloadUrl(backup: IBackup): string {
     return `${window.location.protocol}//${window.location.host}/api/backup/${backup.id}`;
+  }
+
+  getBackupSize(backup: IBackup): string {
+    if (!backup.length || backup.length < 0) {
+      return '';
+    }
+
+    const size = pretty(backup.length);
+    return size;
   }
 
   deleteBackup(backup: IBackup) {

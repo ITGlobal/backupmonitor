@@ -128,6 +128,7 @@ type Backup struct {
 	StorageFilePath string           `gorm:"column:storage_path;type:varchar(256);unique_index"`
 	Time            time.Time        `gorm:"column:time"`
 	Type            model.BackupType `gorm:"column:type"`
+	Length          int64            `gorm:"column:length";default:-1`
 }
 
 // TableName returns database table name
@@ -150,6 +151,7 @@ func (p *Backup) CopyToModel(m *model.Backup) {
 	m.StorageFilePath = p.StorageFilePath
 	m.Time = p.Time
 	m.Type = p.Type
+	m.Length = p.Length
 }
 
 // CopyFromModel copies model data to entity
@@ -160,6 +162,7 @@ func (p *Backup) CopyFromModel(m *model.Backup) {
 	p.StorageFilePath = m.StorageFilePath
 	p.Time = m.Time
 	p.Type = m.Type
+	p.Length = m.Length
 }
 
 // AccessKey contains information about project's access key

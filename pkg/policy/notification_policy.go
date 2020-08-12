@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	notificationFrequency = 8 * time.Hour
+	notificationFrequency   = 8 * time.Hour
 	notificationQuietPeriod = 8 * time.Hour
 )
 
@@ -97,7 +97,7 @@ func (s *notificationPolicy) ShouldSendNotification(project *model.Project, now 
 
 	t := now.Sub(*project.LastNotification)
 
-	if t.Seconds() < notificationFrequency.Seconds() + notificationQuietPeriod.Seconds() {
+	if t.Seconds() < notificationFrequency.Seconds()+notificationQuietPeriod.Seconds() {
 		return false
 	}
 

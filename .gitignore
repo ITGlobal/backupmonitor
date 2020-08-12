@@ -4,3 +4,4 @@ www/**
 var/**
 !**/.gitkeep
 .env
+.idea

@@ -15,6 +15,7 @@ export interface IBackup {
   filename: string;
   time: Date;
   type: BackupType;
+  length: number;
 }
 export type BackupStatus = 'ok' | 'outdated' | 'none';
 

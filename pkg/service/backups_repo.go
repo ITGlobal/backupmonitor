@@ -8,6 +8,7 @@ import (
 	"regexp"
 	"time"
 
+	"github.com/dustin/go-humanize"
 	"github.com/itglobal/backupmonitor/pkg/database"
 	"github.com/itglobal/backupmonitor/pkg/model"
 	"github.com/itglobal/backupmonitor/pkg/storage"
@@ -81,12 +82,14 @@ func (s *backupRepository) Upload(projectID, filename string, source io.Reader) 
 	mBackup.Time = time.Now().UTC()
 
 	// Upload backup file
+	sourceWrapper := &readWrapper{reader: source}
 	fileRef := s.GenerateBackupFileName(project, filename)
-	fileRef, err = s.store.Upload(fileRef, source)
+	fileRef, err = s.store.Upload(fileRef, sourceWrapper)
 	if err != nil {
 		return nil, err
 	}
 	mBackup.StorageFilePath = string(fileRef)
+	mBackup.Length = sourceWrapper.length
 
 	// Save backup to DB
 	eBackup := &database.Backup{}
@@ -106,9 +109,10 @@ func (s *backupRepository) Upload(projectID, filename string, source io.Reader) 
 	tx.Commit()
 
 	s.logger.Printf(
-		"new backup \"%s\" (project \"%s\") has been uploaded (see \"%s\")",
+		"new backup \"%s\" (project \"%s\") has been uploaded (%s, see \"%s\")",
 		eBackup.ID,
 		eBackup.ProjectID,
+		humanize.Bytes(uint64(eBackup.Length)),
 		eBackup.StorageFilePath)
 	return mBackup, nil
 }
@@ -279,4 +283,17 @@ func (s *backupRepository) UpdateBackupStatuses(tx *gorm.DB, projectID string) e
 	}
 
 	return nil
+}
+
+type readWrapper struct {
+	reader io.Reader
+	length int64
+}
+
+func (r *readWrapper) Read(p []byte) (n int, err error) {
+	n, err = r.reader.Read(p)
+	if err == nil {
+		r.length += int64(n)
+	}
+	return
 }

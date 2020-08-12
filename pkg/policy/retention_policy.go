@@ -93,7 +93,7 @@ func (s *retentionPolicy) DropOldBackups(project *model.Project) error {
 	// backups are ordered by time desc
 	// remove all but first N backups
 
-	if len(backups) <=project.BackupRetention {
+	if len(backups) <= project.BackupRetention {
 		return nil
 	}
 

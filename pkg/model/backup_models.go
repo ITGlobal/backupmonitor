@@ -23,6 +23,7 @@ type Backup struct {
 	Type            BackupType `json:"type"`
 	StorageFilePath string     `json:"-"`
 	ProjectID       string     `json:"-"`
+	Length          int64      `json:"length"`
 }
 
 // String convers an object to string

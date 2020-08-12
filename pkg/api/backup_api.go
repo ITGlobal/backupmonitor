@@ -46,9 +46,11 @@ func (controller *backupController) Download(c *gin.Context) {
 
 	defer result.File.Close()
 
-	header := c.Writer.Header()
-	header["Content-type"] = []string{"application/octet-stream"}
-	header["Content-Disposition"] = []string{"attachment; filename= " + result.Backup.FileName}
+	if result.Backup.Length >= 0 {
+		c.Header("Content-Length", fmt.Sprintf("%d", result.Backup.Length))
+	}
+	c.Header("Content-Type", "application/octet-stream")
+	c.Header("Content-Disposition", fmt.Sprintf("attachment; filename=%s", result.Backup.FileName))
 
 	c.Status(200)
 	io.Copy(c.Writer, result.File)

@@ -3,6 +3,7 @@ package api
 import (
 	"context"
 	"log"
+	"mime"
 	"net/http"
 	"path"
 	"path/filepath"
@@ -81,6 +82,8 @@ func (s *server) ConfigureStaticFiles() {
 			c.File("./www" + path.Join(dir, file))
 		}
 	})
+
+	mime.AddExtensionType(".js", "application/javascript")
 }
 
 func (s *server) Start(group *sync.WaitGroup, stop chan interface{}) {

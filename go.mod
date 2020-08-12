@@ -31,7 +31,7 @@ require (
 	github.com/itglobal/backupmonitor/pkg/api v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/component v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/database v0.0.0-00010101000000-000000000000
-	github.com/itglobal/backupmonitor/pkg/notify v0.0.0-00010101000000-000000000000
+	github.com/itglobal/backupmonitor/pkg/notify v0.0.0-20200803130449-72bbf82ebc81
 	github.com/itglobal/backupmonitor/pkg/policy v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/service v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/storage v0.0.0-00010101000000-000000000000

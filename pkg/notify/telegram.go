@@ -61,7 +61,7 @@ func (s *enabledTelegramNotifyer) Notify(msg *TelegramMessage) error {
 	var text string
 
 	text = msg.Title
-	if msg.Text !="" {
+	if msg.Text != "" {
 		text = fmt.Sprintf("%s\n\n%s", msg.Title, text)
 	}
 

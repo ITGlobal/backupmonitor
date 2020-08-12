@@ -14,9 +14,11 @@ replace github.com/itglobal/backupmonitor/pkg/util => ../util
 
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
+	github.com/dustin/go-humanize v1.0.0
 	github.com/itglobal/backupmonitor/pkg/component v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/database v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/model v0.0.0-00010101000000-000000000000
+	github.com/itglobal/backupmonitor/pkg/notify v0.0.0-20200803130449-72bbf82ebc81 // indirect
 	github.com/itglobal/backupmonitor/pkg/storage v0.0.0-00010101000000-000000000000
 	github.com/itglobal/backupmonitor/pkg/util v0.0.0-00010101000000-000000000000
 	github.com/jinzhu/gorm v1.9.12
