@@ -64,7 +64,7 @@ func (p *TestWebhookNotificationRequest) ToMessage() *notify.WebhookMessage {
 		To: []string{p.Target},
 		PayloadJSON: &TestWebhookNotificationPayload{
 			Test:    true,
-			Message: "Test Telegram notification",
+			Message: "Test Webhook notification",
 		},
 	}
 	return msg
