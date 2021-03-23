@@ -8,12 +8,12 @@ RUN apk update && \
 
 WORKDIR /go/src/github.com/itglobal/backupmonitor
 
-RUN go get -u github.com/swaggo/swag/cmd/swag
+RUN go get -u github.com/swaggo/swag/cmd/swag@v1.6.7
 
 COPY . .
 RUN mkdir -p /out/doc
 RUN go get
-RUN swag init --output /out/doc/ --generalInfo swagger.go --dir ./pkg/api/ --parseDependency --parseInternal
+RUN swag init --output /out/doc/ --generalInfo swagger.go --dir ./pkg/api/
 RUN go build -o /out/backupmonitor
 COPY ./doc /out/
 
