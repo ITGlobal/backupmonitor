@@ -6,7 +6,7 @@ type AuthRequest struct {
 	Password string `json:"password" binding:"required"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p AuthRequest) String() string {
 	return toJSON(&p)
 }
@@ -17,7 +17,7 @@ type AuthResponse struct {
 	User  *User  `json:"user"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p AuthResponse) String() string {
 	return toJSON(&p)
 }

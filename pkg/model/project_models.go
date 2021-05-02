@@ -15,7 +15,7 @@ type NotificationParams struct {
 	Webhooks      []string `json:"webhook"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *NotificationParams) String() string {
 	return toJSON(&p)
 }
@@ -71,7 +71,7 @@ const (
 	DefaultPeriod = (24 + 8) * 3600 // 1d 8h
 )
 
-// String convers an object to string
+// String converts an object to string
 func (p *Project) String() string {
 	return toJSON(&p)
 }
@@ -174,7 +174,7 @@ func (p *ProjectCreateParams) ApplyTo(proj *Project) {
 	}
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *ProjectCreateParams) String() string {
 	return toJSON(&p)
 }
@@ -209,7 +209,7 @@ func (p *ProjectUpdateParams) Validate() error {
 	return nil
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *ProjectUpdateParams) String() string {
 	return toJSON(&p)
 }

@@ -10,12 +10,11 @@ import (
 	"github.com/spf13/viper"
 )
 
-type telegramNotifyer interface {
+type telegramNotifier interface {
 	Notify(msg *TelegramMessage) error
 }
 
-func createTelegramNotifyer(logger *log.Logger) telegramNotifyer {
-
+func createTelegramNotifier(logger *log.Logger) telegramNotifier {
 	apiToken := viper.GetString("TELEGRAM_TOKEN")
 	if apiToken != "" {
 		bot, err := telegram.NewBotAPI(apiToken)
@@ -23,7 +22,7 @@ func createTelegramNotifyer(logger *log.Logger) telegramNotifyer {
 			user, err := bot.GetMe()
 			if err == nil {
 				logger.Printf("connected to telegram as \"%s\"", user.UserName)
-				return &enabledTelegramNotifyer{
+				return &enabledTelegramNotifier{
 					logger:   logger,
 					telegram: bot,
 				}
@@ -35,14 +34,14 @@ func createTelegramNotifyer(logger *log.Logger) telegramNotifyer {
 		logger.Printf("telegram integration is disabled")
 	}
 
-	return &disabledTelegramNotifyer{logger: logger}
+	return &disabledTelegramNotifier{logger: logger}
 }
 
-type disabledTelegramNotifyer struct {
+type disabledTelegramNotifier struct {
 	logger *log.Logger
 }
 
-func (s *disabledTelegramNotifyer) Notify(msg *TelegramMessage) error {
+func (s *disabledTelegramNotifier) Notify(msg *TelegramMessage) error {
 	s.logger.Printf("unable to deliver telegram message { title: \"%s\", text: \"%s\", emoji: \"%s\" } to [ %s ]: telegram integration is disabled",
 		msg.Title,
 		msg.Text,
@@ -52,12 +51,12 @@ func (s *disabledTelegramNotifyer) Notify(msg *TelegramMessage) error {
 	return nil
 }
 
-type enabledTelegramNotifyer struct {
+type enabledTelegramNotifier struct {
 	logger   *log.Logger
 	telegram *telegram.BotAPI
 }
 
-func (s *enabledTelegramNotifyer) Notify(msg *TelegramMessage) error {
+func (s *enabledTelegramNotifier) Notify(msg *TelegramMessage) error {
 	var text string
 
 	text = msg.Title

@@ -1,10 +1,10 @@
 package service
 
 import (
+	"github.com/itglobal/backupmonitor/pkg/model"
 	"log"
 
 	"github.com/itglobal/backupmonitor/pkg/database"
-	"github.com/itglobal/backupmonitor/pkg/model"
 	"github.com/itglobal/backupmonitor/pkg/util"
 	"github.com/jinzhu/gorm"
 	"github.com/sarulabs/di"
@@ -48,7 +48,7 @@ func (s *accessKeyRepository) List(projectID string) ([]*model.AccessKey, error)
 	}
 	defer db.Close()
 
-	// Fetchs access keys
+	// Fetches access keys
 	var eAccessKeys []*database.AccessKey
 	err = db.Where("project_id = ?", projectID).Order("id asc").Find(&eAccessKeys).Error
 	if err != nil {
@@ -74,7 +74,7 @@ func (s *accessKeyRepository) Get(key string) (*model.AccessKey, error) {
 	}
 	defer db.Close()
 
-	// Fetchs access key
+	// Fetches access key
 	eAccessKey := &database.AccessKey{}
 	err = db.Where("key = ?", key).First(&eAccessKey).Error
 	if err != nil {
@@ -100,7 +100,7 @@ func (s *accessKeyRepository) GetByID(projectID string, accessKeyID int) (*model
 	}
 	defer db.Close()
 
-	// Fetchs access key
+	// Fetches access key
 	eAccessKey := &database.AccessKey{}
 	err = db.Where("project_id = ? and id = ?", projectID, accessKeyID).First(eAccessKey).Error
 	if err != nil {

@@ -6,13 +6,15 @@ FROM golang:alpine AS backend
 RUN apk update && \
     apk add --no-cache git gcc musl-dev
 
-WORKDIR /go/src/github.com/itglobal/backupmonitor
+WORKDIR /src
 
 RUN go get -u github.com/swaggo/swag/cmd/swag@v1.6.7
+COPY go.mod /src/go.mod
+COPY go.sum /src/go.sum
+RUN go mod download
 
-COPY . .
+COPY . /src
 RUN mkdir -p /out/doc
-RUN go get
 RUN swag init --output /out/doc/ --generalInfo swagger.go --dir ./pkg/api/
 RUN go build -o /out/backupmonitor
 COPY ./doc /out/

@@ -48,7 +48,7 @@ to receive, manage and monitor various backups.
          - LISTEN_ADDR=0.0.0.0:8000
    ```
 
-   Note that this is an example! You should add a HTTPS proxy for `backupmanager` container.
+   Note that this is an example! You should add an HTTPS proxy for `backupmanager` container.
    Exposing it directly to Internet is **not safe**.
 
    It's recommended to use [https-portal](https://github.com/SteveLTN/https-portal) as a reverse proxy
@@ -217,7 +217,7 @@ There are two options for local development:
 
 * using local Minio as a storage:
 
-  1. Run the following command to setup local minio instance (dockerized):
+  1. Run the following command to set up local minio instance (dockerized):
 
      ```shell
      ./scripts/setup-local-env

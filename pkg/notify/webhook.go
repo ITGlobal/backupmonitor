@@ -7,21 +7,21 @@ import (
 	"net/http"
 )
 
-type webhookNotifyer interface {
+type webhookNotifier interface {
 	Notify(msg *WebhookMessage) error
 }
 
-func createWebhookNotifyer(logger *log.Logger) webhookNotifyer {
-	return &webhookNotifyerImpl{
+func createWebhookNotifier(logger *log.Logger) webhookNotifier {
+	return &webhookNotifierImpl{
 		logger: logger,
 	}
 }
 
-type webhookNotifyerImpl struct {
+type webhookNotifierImpl struct {
 	logger *log.Logger
 }
 
-func (s *webhookNotifyerImpl) Notify(msg *WebhookMessage) error {
+func (s *webhookNotifierImpl) Notify(msg *WebhookMessage) error {
 	json, err := json.Marshal(msg.PayloadJSON)
 	if err != nil {
 		s.logger.Printf("unable to trigger webhooks: %v", err)

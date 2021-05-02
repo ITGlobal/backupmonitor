@@ -9,7 +9,7 @@ type User struct {
 	PasswordHash string `json:"-"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *User) String() string {
 	return toJSON(&p)
 }
@@ -40,7 +40,7 @@ type UserChangePasswordRequest struct {
 	NewPassword string `json:"newPassword"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *UserChangePasswordRequest) String() string {
 	return toJSON(&p)
 }

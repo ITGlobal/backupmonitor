@@ -2,12 +2,12 @@ package api
 
 import (
 	"fmt"
+	"github.com/itglobal/backupmonitor/pkg/model"
 	"log"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"github.com/itglobal/backupmonitor/pkg/model"
 	"github.com/itglobal/backupmonitor/pkg/service"
 	"github.com/sarulabs/di"
 )

@@ -9,7 +9,7 @@ type TestSlackNotificationRequest struct {
 	Target string `json:"target"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *TestSlackNotificationRequest) String() string {
 	return toJSON(&p)
 }
@@ -28,7 +28,7 @@ type TestTelegramNotificationRequest struct {
 	Target string `json:"target"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *TestTelegramNotificationRequest) String() string {
 	return toJSON(&p)
 }
@@ -53,7 +53,7 @@ type TestWebhookNotificationRequest struct {
 	Target string `json:"target"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p *TestWebhookNotificationRequest) String() string {
 	return toJSON(&p)
 }

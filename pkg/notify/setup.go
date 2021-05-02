@@ -19,15 +19,15 @@ func Setup(builder component.Builder) {
 
 			s := &serviceImpl{
 				slack: newAsyncInit(func() interface{} {
-					return createSlackNotifyer(logger)
+					return createSlackNotifier(logger)
 				}),
 
 				telegram: newAsyncInit(func() interface{} {
-					return createTelegramNotifyer(logger)
+					return createTelegramNotifier(logger)
 				}),
 
 				webhook: newAsyncInit(func() interface{} {
-					return createWebhookNotifyer(logger)
+					return createWebhookNotifier(logger)
 				}),
 			}
 			return s, nil
@@ -82,22 +82,22 @@ type serviceImpl struct {
 
 // Send a notification via Slack
 func (s *serviceImpl) NotifySlack(msg *SlackMessage) error {
-	notifyer := s.slack.GetValue().(slackNotifyer)
-	err := notifyer.Notify(msg)
+	notifier := s.slack.GetValue().(slackNotifier)
+	err := notifier.Notify(msg)
 	return err
 }
 
 // Send a notification via Telegram
 func (s *serviceImpl) NotifyTelegram(msg *TelegramMessage) error {
-	notifyer := s.telegram.GetValue().(telegramNotifyer)
-	err := notifyer.Notify(msg)
+	notifier := s.telegram.GetValue().(telegramNotifier)
+	err := notifier.Notify(msg)
 	return err
 }
 
 // Send a notification via webhook
 func (s *serviceImpl) NotifyWebhook(msg *WebhookMessage) error {
-	notifyer := s.webhook.GetValue().(webhookNotifyer)
-	err := notifyer.Notify(msg)
+	notifier := s.webhook.GetValue().(webhookNotifier)
+	err := notifier.Notify(msg)
 	return err
 }
 

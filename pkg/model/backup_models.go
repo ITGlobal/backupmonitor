@@ -26,7 +26,7 @@ type Backup struct {
 	Length          int64      `json:"length"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p Backup) String() string {
 	return toJSON(&p)
 }

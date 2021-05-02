@@ -2,7 +2,7 @@ package model
 
 import "fmt"
 
-// EmptyResponse is an empty API respose object
+// EmptyResponse is an empty API response object
 type EmptyResponse struct{}
 
 // ECode is a error code (coarse-grained)

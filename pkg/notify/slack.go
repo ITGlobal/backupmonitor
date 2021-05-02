@@ -8,17 +8,17 @@ import (
 	"github.com/spf13/viper"
 )
 
-type slackNotifyer interface {
+type slackNotifier interface {
 	Notify(msg *SlackMessage) error
 }
 
-func createSlackNotifyer(logger *log.Logger) slackNotifyer {
+func createSlackNotifier(logger *log.Logger) slackNotifier {
 
 	apiToken := viper.GetString("SLACK_TOKEN")
 	if apiToken != "" {
 		api := slack.New(apiToken)
 		logger.Printf("connected to slack")
-		return &enabledSlackNotifyer{
+		return &enabledSlackNotifier{
 			logger:   logger,
 			slack:    api,
 			username: viper.GetString("SLACK_USERNAME"),
@@ -27,14 +27,14 @@ func createSlackNotifyer(logger *log.Logger) slackNotifyer {
 		logger.Printf("slack integration is disabled")
 	}
 
-	return &disabledSlackNotifyer{logger: logger}
+	return &disabledSlackNotifier{logger: logger}
 }
 
-type disabledSlackNotifyer struct {
+type disabledSlackNotifier struct {
 	logger *log.Logger
 }
 
-func (s *disabledSlackNotifyer) Notify(msg *SlackMessage) error {
+func (s *disabledSlackNotifier) Notify(msg *SlackMessage) error {
 	s.logger.Printf("unable to deliver slack message { title: \"%s\", text: \"%s\", emoji: \"%s\" } to [ %s ]: slack integration is disabled",
 		msg.Title,
 		msg.Text,
@@ -44,13 +44,13 @@ func (s *disabledSlackNotifyer) Notify(msg *SlackMessage) error {
 	return nil
 }
 
-type enabledSlackNotifyer struct {
+type enabledSlackNotifier struct {
 	logger   *log.Logger
 	slack    *slack.Client
 	username string
 }
 
-func (s *enabledSlackNotifyer) Notify(msg *SlackMessage) error {
+func (s *enabledSlackNotifier) Notify(msg *SlackMessage) error {
 	options := make([]slack.MsgOption, 0)
 	options = append(options, slack.MsgOptionText(msg.Title, true))
 

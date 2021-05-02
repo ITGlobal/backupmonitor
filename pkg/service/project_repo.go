@@ -1,10 +1,10 @@
 package service
 
 import (
+	"github.com/itglobal/backupmonitor/pkg/model"
 	"log"
 
 	"github.com/itglobal/backupmonitor/pkg/database"
-	"github.com/itglobal/backupmonitor/pkg/model"
 	"github.com/jinzhu/gorm"
 	"github.com/sarulabs/di"
 )
@@ -51,14 +51,14 @@ func (s *projectRepository) List() ([]*model.Project, error) {
 	}
 	defer db.Close()
 
-	// Fetchs projects
+	// Fetch projects
 	var eProjects []*database.Project
 	err = db.Order("id asc").Find(&eProjects).Error
 	if err != nil {
 		return nil, err
 	}
 
-	// Fetchs last backups
+	// Fetch last backups
 	var eBackups []*database.Backup
 	err = db.Where("type = ?", model.BackupTypeLast).Find(&eBackups).Error
 	if err != nil {
@@ -67,15 +67,15 @@ func (s *projectRepository) List() ([]*model.Project, error) {
 
 	// Emit results
 	mProjects := make([]*model.Project, len(eProjects))
-	mProjectsbyID := make(map[string]*model.Project)
+	mProjectsByID := make(map[string]*model.Project)
 	for i, eProject := range eProjects {
 		mProject := eProject.ToModel()
 		mProjects[i] = mProject
-		mProjectsbyID[mProject.ID] = mProject
+		mProjectsByID[mProject.ID] = mProject
 	}
 
 	for _, eBackup := range eBackups {
-		mProject, exists := mProjectsbyID[eBackup.ProjectID]
+		mProject, exists := mProjectsByID[eBackup.ProjectID]
 		if exists {
 			mBackup := eBackup.ToModel()
 			mProject.LastBackup = mBackup

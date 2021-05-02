@@ -10,7 +10,7 @@ type AccessKey struct {
 	ProjectID string `json:"-"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p AccessKey) String() string {
 	return toJSON(&p)
 }
@@ -20,7 +20,7 @@ type AccessKeyCreateParams struct {
 	Label string `json:"label"`
 }
 
-// String convers an object to string
+// String converts an object to string
 func (p AccessKeyCreateParams) String() string {
 	return toJSON(&p)
 }
